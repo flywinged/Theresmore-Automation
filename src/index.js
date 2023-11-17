@@ -66,7 +66,7 @@ const start = async () => {
         mainLoop()
         
         await sleep(1000)
-        // tasks.autoClicker()
+        // tasks.autoClicker() // Enable this if you want autoclicker
     } else {
         if (!hideFullPageOverlayInterval) {
             clearInterval(hideFullPageOverlayInterval)
