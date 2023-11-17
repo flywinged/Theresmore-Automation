@@ -110,7 +110,7 @@ const taVersion = "4.8.1";
     FACTION_IMPROVE: 'improve_',
     FACTION_DELEGATION: 'delegation_'
   };
-  var CONSTANTS = {
+  var constants = {
     PAGES,
     SUBPAGES,
     SUBPAGE_MAPPING,
@@ -32919,32 +32919,32 @@ const taVersion = "4.8.1";
   };
   const hasPage = page => {
     const navButtons = getPagesSelector();
-    const pageIndex = CONSTANTS.PAGES_INDEX[page];
+    const pageIndex = constants.PAGES_INDEX[page];
     return !!navButtons.find(button => reactUtil.getBtnIndex(button, 1) === pageIndex);
   };
   const checkPage = (page, subPage) => {
     const currentPage = getCurrentPageSelector();
     const currentSubPage = getCurrentSubPageSelector();
-    const pageIndex = CONSTANTS.PAGES_INDEX[page];
-    const subPageIndex = CONSTANTS.SUBPAGES_INDEX[subPage];
+    const pageIndex = constants.PAGES_INDEX[page];
+    const subPageIndex = constants.SUBPAGES_INDEX[subPage];
     const isCorrectPage = !page || page && currentPage && reactUtil.getBtnIndex(currentPage, 1) === pageIndex;
     const isCorrectSubPage = !subPage || subPage && currentSubPage && reactUtil.getBtnIndex(currentSubPage, 1) === subPageIndex;
     return isCorrectPage && isCorrectSubPage;
   };
   const hasSubPage = subPage => {
     const subTabs = getSubPagesSelector();
-    const subPageIndex = CONSTANTS.SUBPAGES_INDEX[subPage];
+    const subPageIndex = constants.SUBPAGES_INDEX[subPage];
     return !!subTabs.find(button => reactUtil.getBtnIndex(button, 1) === subPageIndex);
   };
   const switchPage = async page => {
     let foundPage = hasPage(page);
     if (!foundPage) {
-      await switchPage(CONSTANTS.PAGES.BUILD);
+      await switchPage(constants.PAGES.BUILD);
       return;
     }
     let switchedPage = false;
     const navButtons = getPagesSelector();
-    const pageIndex = CONSTANTS.PAGES_INDEX[page];
+    const pageIndex = constants.PAGES_INDEX[page];
     const pageButton = navButtons.find(button => reactUtil.getBtnIndex(button, 1) === pageIndex && button.getAttribute('aria-selected') !== 'true');
     if (pageButton) {
       pageButton.click();
@@ -32966,7 +32966,7 @@ const taVersion = "4.8.1";
     if (foundSubPage) {
       let switchedSubPage = false;
       const navButtons = getSubPagesSelector();
-      const subPageIndex = CONSTANTS.SUBPAGES_INDEX[subPage];
+      const subPageIndex = constants.SUBPAGES_INDEX[subPage];
       const subPageButton = navButtons.find(button => reactUtil.getBtnIndex(button, 1) === subPageIndex && button.getAttribute('aria-selected') !== 'true');
       if (subPageButton) {
         subPageButton.click();
@@ -32992,13 +32992,13 @@ const taVersion = "4.8.1";
   const getActivePageContent = () => {
     return document.querySelector('#maintabs-container > div > div[role=tabpanel]');
   };
-  const getAllButtons$5 = (activeOnly = true, extraSelectors = '') => {
+  const getAllButtons = (activeOnly = true, extraSelectors = '') => {
     const activeOnlySelector = activeOnly ? ':not(.btn-off):not(.btn-off-cap)' : '';
     return [...getActivePageContent().querySelectorAll(`button.btn${activeOnlySelector}${extraSelectors}`)];
   };
   var selectors = {
     getActivePageContent,
-    getAllButtons: getAllButtons$5
+    getAllButtons
   };
 
   let keyGen = {
@@ -33086,23 +33086,23 @@ const taVersion = "4.8.1";
       },
       lastMigration: 2
     };
-    Object.keys(CONSTANTS.PAGES).every(key => {
-      options.pages[CONSTANTS.PAGES[key]] = {
+    Object.keys(constants.PAGES).every(key => {
+      options.pages[constants.PAGES[key]] = {
         enabled: false,
-        page: CONSTANTS.PAGES[key],
+        page: constants.PAGES[key],
         subpages: {},
         options: {}
       };
-      return options.pages[CONSTANTS.PAGES[key]];
+      return options.pages[constants.PAGES[key]];
     });
-    Object.keys(CONSTANTS.SUBPAGES).every(key => {
-      const parent = CONSTANTS.PAGES[CONSTANTS.SUBPAGE_MAPPING[key]];
-      options.pages[parent].subpages[CONSTANTS.SUBPAGES[key]] = {
+    Object.keys(constants.SUBPAGES).every(key => {
+      const parent = constants.PAGES[constants.SUBPAGE_MAPPING[key]];
+      options.pages[parent].subpages[constants.SUBPAGES[key]] = {
         enabled: false,
-        subpage: CONSTANTS.SUBPAGES[key],
+        subpage: constants.SUBPAGES[key],
         options: {}
       };
-      return options.pages[parent].subpages[CONSTANTS.SUBPAGES[key]];
+      return options.pages[parent].subpages[constants.SUBPAGES[key]];
     });
     return options;
   };
@@ -33131,43 +33131,43 @@ const taVersion = "4.8.1";
   }
 
   const migrations = [() => {
-    if (typeof state.options.pages[CONSTANTS.PAGES.BUILD] !== 'object') {
+    if (typeof state.options.pages[constants.PAGES.BUILD] !== 'object') {
       const newOptions = getDefaultOptions();
-      Object.keys(CONSTANTS.PAGES).every(key => {
-        newOptions.pages[CONSTANTS.PAGES[key]] = {
+      Object.keys(constants.PAGES).every(key => {
+        newOptions.pages[constants.PAGES[key]] = {
           enabled: false,
-          page: CONSTANTS.PAGES[key],
+          page: constants.PAGES[key],
           subpages: {},
           options: {}
         };
-        return newOptions.pages[CONSTANTS.PAGES[key]];
+        return newOptions.pages[constants.PAGES[key]];
       });
-      Object.keys(CONSTANTS.SUBPAGES).every(key => {
-        const parent = CONSTANTS.PAGES[CONSTANTS.SUBPAGE_MAPPING[key]];
-        newOptions.pages[parent].subpages[CONSTANTS.SUBPAGES[key]] = {
+      Object.keys(constants.SUBPAGES).every(key => {
+        const parent = constants.PAGES[constants.SUBPAGE_MAPPING[key]];
+        newOptions.pages[parent].subpages[constants.SUBPAGES[key]] = {
           enabled: false,
-          subpage: CONSTANTS.SUBPAGES[key],
+          subpage: constants.SUBPAGES[key],
           options: {}
         };
-        return newOptions.pages[parent].subpages[CONSTANTS.SUBPAGES[key]];
+        return newOptions.pages[parent].subpages[constants.SUBPAGES[key]];
       });
       Object.keys(state.options.pages).forEach(key => {
         newOptions.pages[key].enabled = state.options.pages[key] || false;
-        if (key === CONSTANTS.PAGES.RESEARCH) {
+        if (key === constants.PAGES.RESEARCH) {
           Object.keys(state.options[key]).forEach(key => {
             if (key.includes('tech_')) {
               delete state.options[key];
             }
           });
-          newOptions.pages[key].subpages[CONSTANTS.SUBPAGES.RESEARCH].enabled = newOptions.pages[key].enabled;
-          newOptions.pages[key].subpages[CONSTANTS.SUBPAGES.RESEARCH].options = state.options[key];
-        } else if (key === CONSTANTS.PAGES.BUILD) {
-          newOptions.pages[key].subpages[CONSTANTS.SUBPAGES.CITY].enabled = newOptions.pages[key].enabled;
-          newOptions.pages[key].subpages[CONSTANTS.SUBPAGES.COLONY].enabled = newOptions.pages[key].enabled;
+          newOptions.pages[key].subpages[constants.SUBPAGES.RESEARCH].enabled = newOptions.pages[key].enabled;
+          newOptions.pages[key].subpages[constants.SUBPAGES.RESEARCH].options = state.options[key];
+        } else if (key === constants.PAGES.BUILD) {
+          newOptions.pages[key].subpages[constants.SUBPAGES.CITY].enabled = newOptions.pages[key].enabled;
+          newOptions.pages[key].subpages[constants.SUBPAGES.COLONY].enabled = newOptions.pages[key].enabled;
           Object.keys(state.options[key]).forEach(id => {
             const building = buildings.find(building => building.id === id);
             if (building) {
-              const subPage = building.tab === 1 ? CONSTANTS.SUBPAGES.CITY : CONSTANTS.SUBPAGES.COLONY;
+              const subPage = building.tab === 1 ? constants.SUBPAGES.CITY : constants.SUBPAGES.COLONY;
               newOptions.pages[key].subpages[subPage].options[id] = state.options[key][id];
               newOptions.pages[key].subpages[subPage].options[`prio_${id}`] = state.options[key][`prio_${id}`];
             }
@@ -33175,7 +33175,7 @@ const taVersion = "4.8.1";
           newOptions.pages[key].options.prioWonders = state.options.automation.prioWonders;
         } else {
           newOptions.pages[key].options = state.options[key];
-          if (key === CONSTANTS.PAGES.POPULATION) {
+          if (key === constants.PAGES.POPULATION) {
             newOptions.pages[key].options.minimumFood = state.options.automation.minimumFood;
             newOptions.pages[key].options.populationRebalanceTime = state.options.automation.populationRebalanceTime;
           }
@@ -33206,182 +33206,13 @@ const taVersion = "4.8.1";
     }
   };
 
-  const fights$2 = factions.concat(locations).map(fight => {
+  factions.concat(locations).map(fight => {
     return {
       key: fight.id,
       id: translate(fight.id),
       army: fight.army
     };
   });
-  const applyUnitMods = unit => {
-    const unitCopy = {
-      ...unit
-    };
-    let run = reactUtil.getGameData().run;
-    if (unitCopy && run && run.modifiers) {
-      let bonusAttack = 0;
-      let bonusDefense = 0;
-      const unitMods = run.modifiers.find(mod => mod.id === unitCopy.id);
-      if (unitMods && unitMods.mods) {
-        for (let i = 0; i < unitMods.mods.length; i++) {
-          const mod = unitMods.mods[i];
-          if (mod.type === 'stat') {
-            if (!mod.perc) {
-              if (mod.id === 'attack') {
-                bonusAttack += mod.value;
-              }
-              if (mod.id === 'defense') {
-                bonusDefense += mod.value;
-              }
-            }
-          }
-        }
-      }
-      unitCopy.attack += bonusAttack;
-      unitCopy.defense += bonusDefense;
-    }
-    return unitCopy;
-  };
-  const getRandomNumber = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  };
-  const getEnemyArmy = enemyId => {
-    const difficultyMode = reactUtil.getGameData().SettingsStore.difficultyMode;
-    const difficultyModeMultiplier = difficultyMode === '0' ? 1 : difficultyMode === '1' ? 1.5 : 2;
-    const randomBonus = 1.3;
-    const army = fights$2.find(fight => fight.key === enemyId || fight.id === enemyId).army.map(unit => {
-      const unitDetails = units.find(enemy => enemy.id === unit.id);
-      return {
-        ...unit,
-        ...unitDetails,
-        value: Math.round(unit.value * difficultyModeMultiplier * randomBonus)
-      };
-    });
-    return army;
-  };
-  const getUserArmy = (isDefending = false, onlyAvailable = false) => {
-    const userArmy = [];
-    let run = reactUtil.getGameData().run;
-    if (run && run.army) {
-      for (let i = 0; i < run.army.length; i++) {
-        const unit = run.army[i];
-        const unitsValue = onlyAvailable ? unit.value - unit.away : unit.value;
-        if (unitsValue) {
-          const unitDetails = units.find(unitDetails => unitDetails.id === unit.id);
-          if (unitDetails) {
-            if (unitDetails.category === 0) {
-              if (!isDefending || unit.id !== 'settlement_defenses') {
-                continue;
-              }
-            }
-            userArmy.push({
-              ...applyUnitMods(unitDetails),
-              key: unitDetails.id,
-              value: unitsValue
-            });
-          }
-        }
-      }
-    }
-    return userArmy;
-  };
-  const generateArmy = (army = [], attacker = false, isDefending = false) => {
-    army = army.filter(unit => isDefending ? true : unit.category);
-    const units = [];
-    army.forEach(squad => {
-      for (let i = 0; i < squad.value; i++) {
-        units.push({
-          ...squad,
-          sortOrder: Number(attacker ? squad.category.toString() + (1000 + getRandomNumber(0, 900)).toString() : squad.order.toString() + (1e3 + getRandomNumber(0, 900)).toString())
-        });
-      }
-    });
-    return units.sort((a, b) => a.sortOrder - b.sortOrder);
-  };
-  const canWinBattle = (enemyId, isDefending = false, onlyAvailable = false) => {
-    const forces = {
-      player: {
-        attack: generateArmy(getUserArmy(isDefending, onlyAvailable), true, isDefending),
-        defense: generateArmy(getUserArmy(isDefending, onlyAvailable), false, isDefending)
-      },
-      enemy: {
-        attack: generateArmy(getEnemyArmy(enemyId), true),
-        defense: generateArmy(getEnemyArmy(enemyId), false)
-      }
-    };
-    let result = 0;
-    while (!result) {
-      const deadUnits = {
-        player: [],
-        enemy: []
-      };
-      let enemyUnitIdx = 0;
-      let playerUnitIdx = 0;
-      forces.player.attack.forEach(attUnit => {
-        if (typeof forces.enemy.defense[enemyUnitIdx] !== 'undefined') {
-          let unitAttack = attUnit.attack;
-          let effectiveType = attUnit.cat === 0 ? 0 : attUnit.cat === 4 ? 1 : attUnit.cat + 1;
-          if (effectiveType === forces.enemy.defense[enemyUnitIdx].cat) {
-            unitAttack *= 2;
-          }
-          if (unitAttack >= forces.enemy.defense[enemyUnitIdx].defense) {
-            deadUnits.enemy.push(forces.enemy.defense[enemyUnitIdx].id);
-            enemyUnitIdx += 1;
-          } else {
-            forces.enemy.defense[enemyUnitIdx].defense -= unitAttack;
-          }
-        }
-      });
-      forces.enemy.attack.forEach(attUnit => {
-        if (typeof forces.player.defense[playerUnitIdx] !== 'undefined') {
-          let unitAttack = attUnit.attack;
-          let effectiveType = attUnit.cat === 0 ? 0 : attUnit.cat === 4 ? 1 : attUnit.cat + 1;
-          if (effectiveType === forces.player.defense[playerUnitIdx].cat) {
-            unitAttack *= 2;
-          }
-          if (unitAttack >= forces.player.defense[playerUnitIdx].defense) {
-            deadUnits.player.push(forces.player.defense[playerUnitIdx].id);
-            playerUnitIdx += 1;
-          } else {
-            forces.player.defense[playerUnitIdx].defense -= unitAttack;
-          }
-        }
-      });
-      if (deadUnits.enemy.length) {
-        deadUnits.enemy.forEach(deadUnitId => {
-          const attackIndex = forces.enemy.attack.findIndex(unit => unit.id === deadUnitId);
-          const defenseIndex = forces.enemy.defense.findIndex(unit => unit.id === deadUnitId);
-          if (attackIndex > -1) {
-            forces.enemy.attack.splice(attackIndex, 1);
-          }
-          if (defenseIndex > -1) {
-            forces.enemy.defense.splice(defenseIndex, 1);
-          }
-        });
-      }
-      if (deadUnits.player.length) {
-        deadUnits.player.forEach(deadUnitId => {
-          const attackIndex = forces.player.attack.findIndex(unit => unit.id === deadUnitId);
-          const defenseIndex = forces.player.defense.findIndex(unit => unit.id === deadUnitId);
-          if (attackIndex > -1) {
-            forces.player.attack.splice(attackIndex, 1);
-          }
-          if (defenseIndex > -1) {
-            forces.player.defense.splice(defenseIndex, 1);
-          }
-        });
-      }
-      if (!forces.enemy.attack.length || !forces.player.attack.length) {
-        result = forces.player.attack.length ? 1 : 2;
-      }
-    }
-    return result === 1 ? true : false;
-  };
-  var armyCalculator = {
-    canWinBattle
-  };
 
   const ids = {
     resources: ['research', 'food', 'wood', 'stone', 'gold', 'tools', 'copper', 'iron', 'cow', 'horse', 'luck', 'mana', 'building_material', 'faith', 'supplies', 'crystal', 'steel', 'saltpetre', 'natronite'],
@@ -33408,269 +33239,7 @@ const taVersion = "4.8.1";
     }
   };
 
-  const getUnitsList = () => {
-    const unitsObject = state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.ARMY].options;
-    if (Object.keys(unitsObject).length) {
-      let unitsList = Object.keys(unitsObject).filter(key => !key.includes('prio_')).filter(key => !!unitsObject[key]).filter(key => !!unitsObject[`prio_${key}`]).map(key => {
-        const unit = {
-          key: key,
-          id: translate(key, 'uni_'),
-          max: unitsObject[key] === -1 ? 99999 : unitsObject[key],
-          prio: unitsObject[`prio_${key}`]
-        };
-        return unit;
-      }).sort((a, b) => {
-        return b.prio - a.prio;
-      });
-      return unitsList;
-    }
-    return [];
-  };
-  const userEnabled$a = () => {
-    return (state.options.pages[CONSTANTS.PAGES.ARMY].enabled || false) && (state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.ARMY].enabled || false);
-  };
-  const getArmyNumbers = () => {
-    return [reactUtil.getGameData().ArmyStore.ownedCount, reactUtil.getGameData().ArmyStore.cap];
-  };
-  const getControls = () => {
-    const armyNumbers = getArmyNumbers();
-    const allButtons = selectors.getAllButtons(true);
-    const unitsOptionsList = getUnitsList();
-    const controls = {
-      units: [],
-      counts: {}
-    };
-    allButtons.forEach(button => {
-      const btnKey = reactUtil.getNearestKey(button, 7);
-      if (!btnKey) {
-        const buttonText = button.innerText.trim();
-        if (buttonText === '+1') {
-          controls.counts['1'] = button;
-        } else if (buttonText === '+10') {
-          controls.counts['10'] = button;
-        } else if (buttonText === '+50') {
-          controls.counts['50'] = button;
-        }
-      } else if (btnKey) {
-        const btnData = reactUtil.getReactData(button, 3);
-        const unit = units.find(unit => keyGen.armyArmy.key(unit.id) === btnKey);
-        if (unit && btnData.memoizedProps.content instanceof Object) {
-          const armyData = reactUtil.getGameData().run.army[reactUtil.getGameData().idxs.army[unit.id]];
-          let count = 0;
-          if (armyData) {
-            count = armyData.value;
-          }
-          unit.count = count;
-          unit.button = button;
-          unit.key = unit.id;
-          const unitOptions = unitsOptionsList.find(unitOption => unitOption.key === unit.key);
-          if (unitOptions) {
-            const unitToAdd = {
-              ...unit,
-              ...unitOptions
-            };
-            if (unitToAdd.cap) {
-              unitToAdd.max = Math.min(unitToAdd.cap, unitToAdd.max);
-            }
-            unitToAdd.max = Math.min(armyNumbers[1] - armyNumbers[0] + unitToAdd.count, unitToAdd.max);
-            if (unitToAdd.max > unitToAdd.count) {
-              controls.units.push(unitToAdd);
-            }
-          }
-        }
-      }
-    });
-    controls.units.sort((a, b) => b.prio - a.prio);
-    return controls;
-  };
-  const isFull = () => {
-    const armyNumbers = getArmyNumbers();
-    return armyNumbers[0] >= armyNumbers[1];
-  };
-  const executeAction$a = async () => {
-    if (!navigation.checkPage(CONSTANTS.PAGES.ARMY, CONSTANTS.SUBPAGES.ARMY)) return;
-    if (state.scriptPaused) return;
-    if (isFull()) return;
-    let controls = getControls();
-    if (controls.units.length) {
-      while (!state.scriptPaused && controls.units.length) {
-        let refreshUnits = false;
-        const highestPrio = controls.units[0].prio;
-        const highestPrioUnits = controls.units.filter(unit => unit.prio === highestPrio);
-        controls.units = controls.units.filter(unit => unit.prio < highestPrio);
-        const totalCost = {};
-        let maxBulkHire = 50;
-        while (!state.scriptPaused && highestPrioUnits.length && !isFull()) {
-          for (let i = 0; i < highestPrioUnits.length && !state.scriptPaused && !isFull(); i++) {
-            const unit = highestPrioUnits[i];
-            if (unit.gen) {
-              for (let i = 0; i < unit.gen.length; i++) {
-                const gen = unit.gen[i];
-                if (gen.type === 'resource') {
-                  totalCost[gen.id] = totalCost[gen.id] ? totalCost[gen.id] : 0;
-                  totalCost[gen.id] += gen.value;
-                }
-              }
-            }
-            if (unit.max - unit.count < 10) {
-              maxBulkHire = 1;
-            } else if (unit.max - unit.count < 50) {
-              maxBulkHire = Math.min(maxBulkHire, 10);
-            }
-          }
-          if (maxBulkHire > 1) {
-            const usedResources = Object.keys(totalCost);
-            for (let i = 0; i < usedResources.length && maxBulkHire > 1; i++) {
-              const resId = usedResources[i];
-              const resource = resources.get(resId);
-              if (resource && totalCost[resId] < 0) {
-                if (resource.speed + 10 * totalCost[resId] < 0) {
-                  maxBulkHire = Math.min(1, maxBulkHire);
-                } else if (resource.speed + 50 * totalCost[resId] < 0) {
-                  maxBulkHire = Math.min(10, maxBulkHire);
-                }
-              }
-            }
-          }
-          controls.counts[maxBulkHire].click();
-          await sleep(25);
-          let shouldHire = true;
-          const unit = highestPrioUnits.shift();
-          shouldHire = !unit.gen.filter(gen => gen.type === 'resource').find(gen => !resources.get(gen.id) || resources.get(gen.id).speed + maxBulkHire * gen.value <= 0);
-          if (shouldHire) {
-            unit.button.click();
-            logger({
-              msgLevel: 'log',
-              msg: `Hiring ${maxBulkHire} ${unit.id}(s) (current: ${unit.count}, target: ${unit.max})`
-            });
-            refreshUnits = true;
-            await sleep(25);
-            if (!navigation.checkPage(CONSTANTS.PAGES.ARMY, CONSTANTS.SUBPAGES.ARMY)) return;
-          }
-        }
-        await sleep(1400);
-        if (refreshUnits) {
-          controls = getControls();
-        }
-      }
-    }
-  };
-  var ArmyArmy = {
-    page: CONSTANTS.PAGES.ARMY,
-    subpage: CONSTANTS.SUBPAGES.ARMY,
-    enabled: () => userEnabled$a() && navigation.hasPage(CONSTANTS.PAGES.ARMY),
-    action: async () => {
-      await navigation.switchSubPage(CONSTANTS.SUBPAGES.ARMY, CONSTANTS.PAGES.ARMY);
-      if (navigation.checkPage(CONSTANTS.PAGES.ARMY, CONSTANTS.SUBPAGES.ARMY)) await executeAction$a();
-    }
-  };
-
-  const userEnabled$9 = () => {
-    return (state.options.pages[CONSTANTS.PAGES.ARMY].enabled || false) && (state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.EXPLORE].enabled || false);
-  };
-  const getSendToExplore = (container, activeOnly = true) => {
-    const activeOnlySelector = activeOnly ? ':not(.btn-off):not(.btn-off-cap)' : '';
-    return container.querySelector(`button.btn-blue${activeOnlySelector}`);
-  };
-  const executeAction$9 = async () => {
-    if (!navigation.checkPage(CONSTANTS.PAGES.ARMY, CONSTANTS.SUBPAGES.EXPLORE)) return;
-    if (state.scriptPaused) return;
-    const limits = {
-      scout: {
-        min: state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.EXPLORE].options.scoutsMin ?? 0,
-        max: state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.EXPLORE].options.scoutsMax ?? 0
-      },
-      explorer: {
-        min: state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.EXPLORE].options.explorersMin ?? 0,
-        max: state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.EXPLORE].options.explorersMax ?? 0
-      },
-      familiar: {
-        min: state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.EXPLORE].options.familiarsMin ?? 0,
-        max: state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.EXPLORE].options.familiarsMax ?? 0
-      }
-    };
-    const container = document.querySelector('div.tab-container.sub-container');
-    if (container) {
-      let canExplore = false;
-      const boxes = [...container.querySelectorAll('div.grid > div.flex')];
-      boxes.shift();
-      let unitsSent = [];
-      for (let i = 0; i < boxes.length; i++) {
-        const box = boxes[i];
-        const unitKey = reactUtil.getNearestKey(box, 2);
-        const removeUnitButton = box.querySelector('div.inline-flex button.btn-red.rounded-none');
-        const addUnitButton = box.querySelector('div.inline-flex button.btn-green.rounded-none');
-        const unit = units.find(unit => keyGen.armyAttack.key(unit.id) === unitKey);
-        let count = box.querySelector('input[type="text"]').value.split(' / ').map(x => +x);
-        if (!limits[unit.id]) {
-          continue;
-        }
-        const limitMin = limits[unit.id].min;
-        const limitMax = limits[unit.id].max;
-        if (count[1] < limitMin) {
-          continue;
-        }
-        for (let i = 0; i < count[0] - limitMax && removeUnitButton && !removeUnitButton.disabled; i++) {
-          removeUnitButton.click();
-          await sleep(25);
-        }
-        count = box.querySelector('input[type="text"]').value.split(' / ').map(x => +x);
-        for (let i = 0; i < limitMax - count[0] && addUnitButton && !addUnitButton.disabled && !!getSendToExplore(container, false); i++) {
-          addUnitButton.click();
-          await sleep(25);
-        }
-        if (!getSendToExplore(container)) {
-          const removeUnitButton = box.querySelector('div.inline-flex button.btn-red.rounded-none');
-          if (removeUnitButton && !removeUnitButton.disabled) {
-            removeUnitButton.click();
-            await sleep(25);
-          }
-        }
-        count = box.querySelector('input[type="text"]').value.split(' / ').map(x => +x);
-        if (count[0] >= limitMin) {
-          canExplore = true;
-          unitsSent.push(`${count[0]} ${translate(unit.id, 'uni_')}(s)`);
-        } else {
-          const removeUnitButton = box.querySelector('div.inline-flex button.btn-red.rounded-none');
-          while (removeUnitButton && !removeUnitButton.disabled) {
-            removeUnitButton.click();
-            await sleep(25);
-          }
-        }
-      }
-      const sendToExplore = getSendToExplore(container);
-      if (!state.scriptPaused && sendToExplore && canExplore) {
-        logger({
-          msgLevel: 'log',
-          msg: `Starting exploration: ${unitsSent.join(', ')}`
-        });
-        sendToExplore.click();
-        await sleep(25);
-      }
-    }
-  };
-  const getMinWaitTime$1 = () => {
-    let waitTime = 60000;
-    if (reactUtil.getGameData().StatsStore && reactUtil.getGameData().StatsStore.ngResetNumber) {
-      const ngResets = reactUtil.getGameData().StatsStore.ngResetNumber;
-      for (let i = 0; i < ngResets; i++) {
-        waitTime = waitTime / 2;
-      }
-    }
-    waitTime = Math.ceil(Math.max(waitTime, 3000) / 2) + 1000;
-    return waitTime;
-  };
-  var ArmyExplore = {
-    page: CONSTANTS.PAGES.ARMY,
-    subpage: CONSTANTS.SUBPAGES.EXPLORE,
-    enabled: () => userEnabled$9() && navigation.hasPage(CONSTANTS.PAGES.ARMY) && new Date().getTime() - (state.lastVisited[`${CONSTANTS.PAGES.ARMY}${CONSTANTS.SUBPAGES.EXPLORE}`] || 0) > getMinWaitTime$1(),
-    action: async () => {
-      await navigation.switchSubPage(CONSTANTS.SUBPAGES.EXPLORE, CONSTANTS.PAGES.ARMY);
-      if (navigation.checkPage(CONSTANTS.PAGES.ARMY, CONSTANTS.SUBPAGES.EXPLORE)) await executeAction$9();
-    }
-  };
-
-  const fights$1 = factions.concat(locations).filter(fight => !fight.id.includes('orc_war_party_')).map(fight => {
+  factions.concat(locations).filter(fight => !fight.id.includes('orc_war_party_')).map(fight => {
     return {
       key: fight.id,
       id: translate(fight.id),
@@ -33678,498 +33247,11 @@ const taVersion = "4.8.1";
       level: fight.level
     };
   }).filter(fight => typeof fight.level !== 'undefined');
-  const factionFights = factions.map(faction => faction.id);
-  const unassignAll = controlBox => {
-    const allButtons = [...controlBox.querySelectorAll('button:not(.btn)')];
-    for (let i = 0; i < allButtons.length; i++) {
-      const button = allButtons[i];
-      const parentClasses = button.parentElement.classList.toString();
-      const classesToFind = ['absolute', 'top-0', 'right-7'];
-      if (classesToFind.every(className => parentClasses.includes(className))) {
-        button.click();
-        break;
-      }
-    }
-  };
-  const assignAll = controlBox => {
-    const allButtons = [...controlBox.querySelectorAll('button:not(.btn)')];
-    for (let i = 0; i < allButtons.length; i++) {
-      const button = allButtons[i];
-      const parentClasses = button.parentElement.classList.toString();
-      const classesToFind = ['absolute', 'top-0', 'right-0'];
-      if (classesToFind.every(className => parentClasses.includes(className))) {
-        button.click();
-        break;
-      }
-    }
-  };
-  const userEnabled$8 = () => {
-    return (state.options.pages[CONSTANTS.PAGES.ARMY].enabled || false) && (state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.ATTACK].enabled || false);
-  };
-  const executeAction$8 = async () => {
-    if (!navigation.checkPage(CONSTANTS.PAGES.ARMY, CONSTANTS.SUBPAGES.ATTACK)) return;
-    if (state.scriptPaused) return;
-    const container = document.querySelector('div.tab-container.sub-container');
-    if (container) {
-      const boxes = [...container.querySelectorAll('div.grid > div.flex')];
-      const controlBox = boxes.shift();
-      let enemyList = [];
-      let targetSelected = false;
-      let target;
-      const enemySelectorButton = controlBox.querySelector('button.btn');
-      const sendToAttackButton = [...controlBox.querySelectorAll('button.btn')].find(button => reactUtil.getBtnIndex(button, 0) === 1);
-      if (sendToAttackButton) {
-        if (enemySelectorButton && !enemySelectorButton.disabled && !state.stopAttacks && !state.scriptPaused) {
-          enemySelectorButton.click();
-          await sleep(250);
-          const modals = [...document.querySelectorAll('h3.modal-title')];
-          if (modals.length) {
-            enemyList = [...modals.map(modal => [...modal.parentElement.querySelectorAll('h5')]).flat()].map(h5 => {
-              const key = reactUtil.getNearestKey(h5, 2);
-              if (!keyGen.enemy.check(key)) {
-                return undefined;
-              }
-              const enemyDetails = fights$1.find(fight => keyGen.enemy.key(fight.key) === key);
-              return {
-                button: h5,
-                ...enemyDetails
-              };
-            }).filter(fight => fight).filter(fight => state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.ATTACK].options[fight.key]).filter(fight => armyCalculator.canWinBattle(fight.key, false, false));
-            enemyList.sort((a, b) => {
-              let aLevel = a.level || 0;
-              let bLevel = b.level || 0;
-              if (factionFights.includes(a.key)) {
-                aLevel -= 100;
-              }
-              if (factionFights.includes(b.key)) {
-                bLevel -= 100;
-              }
-              return aLevel - bLevel;
-            });
-            if (enemyList.length && !state.scriptPaused) {
-              target = enemyList.shift();
-              targetSelected = true;
-              target.button.click();
-              await sleep(1000);
-            } else {
-              targetSelected = false;
-              const closeButton = modals[0].parentElement.parentElement.parentElement.querySelector('div.absolute > button');
-              if (closeButton) {
-                closeButton.click();
-                await sleep(20);
-              }
-            }
-          }
-          if (targetSelected && target && !state.stopAttacks) {
-            assignAll(controlBox);
-            if (!sendToAttackButton.disabled && !state.scriptPaused) {
-              logger({
-                msgLevel: 'log',
-                msg: `Launching attack against ${target.id}`
-              });
-              sendToAttackButton.click();
-            } else {
-              unassignAll(controlBox);
-            }
-          }
-          await sleep(20);
-        } else {
-          unassignAll(controlBox);
-        }
-      }
-    }
-  };
-  const getMinWaitTime = () => {
-    let waitTime = 60000;
-    if (reactUtil.getGameData().StatsStore && reactUtil.getGameData().StatsStore.ngResetNumber) {
-      const ngResets = reactUtil.getGameData().StatsStore.ngResetNumber;
-      for (let i = 0; i < ngResets; i++) {
-        waitTime = waitTime / 2;
-      }
-    }
-    waitTime = Math.ceil(Math.max(waitTime, 3000) / 2) + 1000;
-    return waitTime;
-  };
-  var ArmyAttack = {
-    page: CONSTANTS.PAGES.ARMY,
-    subpage: CONSTANTS.SUBPAGES.ATTACK,
-    enabled: () => userEnabled$8() && navigation.hasPage(CONSTANTS.PAGES.ARMY) && new Date().getTime() - (state.lastVisited[`${CONSTANTS.PAGES.ARMY}${CONSTANTS.SUBPAGES.ATTACK}`] || 0) > getMinWaitTime(),
-    action: async () => {
-      await navigation.switchSubPage(CONSTANTS.SUBPAGES.ATTACK, CONSTANTS.PAGES.ARMY);
-      if (navigation.checkPage(CONSTANTS.PAGES.ARMY, CONSTANTS.SUBPAGES.ATTACK)) await executeAction$8();
-    }
-  };
+  factions.map(faction => faction.id);
 
-  const getBuildingsList$1 = () => {
-    const buildingsObject = state.options.pages[CONSTANTS.PAGES.BUILD].subpages[CONSTANTS.SUBPAGES.CITY].options;
-    if (Object.keys(buildingsObject).length) {
-      let buildingsList = Object.keys(buildingsObject).filter(key => !key.includes('prio_')).filter(key => !!buildingsObject[key]).filter(key => !!buildingsObject[`prio_${key}`]).map(key => {
-        const building = {
-          key: key,
-          id: translate(key, 'bui_'),
-          max: buildingsObject[key] === -1 ? 999 : buildingsObject[key],
-          prio: buildingsObject[`prio_${key}`],
-          isSafe: true
-        };
-        const buildingData = buildings.find(building => building.id === key);
-        if (buildingData) {
-          if (buildingData.gen) {
-            const negativeGen = buildingData.gen.filter(gen => gen.value < 0 && gen.type === 'resource');
-            building.isSafe = !negativeGen.length;
-            if (negativeGen.length) {
-              const requires = negativeGen.map(gen => {
-                return {
-                  resource: gen.id,
-                  parameter: 'speed',
-                  minValue: Math.abs(gen.value)
-                };
-              });
-              building.requires = requires;
-            }
-          }
-        }
-        return {
-          ...buildingData,
-          ...building
-        };
-      }).sort((a, b) => {
-        return b.prio - a.prio;
-      });
-      return buildingsList;
-    }
-    return [];
-  };
-  const userEnabled$7 = () => {
-    return (state.options.pages[CONSTANTS.PAGES.BUILD].enabled || false) && (state.options.pages[CONSTANTS.PAGES.BUILD].subpages[CONSTANTS.SUBPAGES.CITY].enabled || false);
-  };
-  const getAllButtons$4 = () => {
-    const buildingsList = getBuildingsList$1();
-    const buttons = selectors.getAllButtons(true).map(button => {
-      const id = reactUtil.getNearestKey(button, 6);
-      const count = button.querySelector('span.right-0') ? numberParser.parse(button.querySelector('span.right-0').innerText) : 0;
-      return {
-        id: id,
-        element: button,
-        count: count,
-        building: buildingsList.find(building => keyGen.building.key(building.key) === id)
-      };
-    }).filter(button => button.building && button.count < button.building.max).sort((a, b) => {
-      if (a.building.prio !== b.building.prio) {
-        return b.building.prio - a.building.prio;
-      }
-      return a.count - b.count;
-    });
-    return buttons;
-  };
-  const executeAction$7 = async () => {
-    let buttons = getAllButtons$4();
-    if (buttons.length) {
-      while (!state.scriptPaused && buttons.length) {
-        let refreshButtons = false;
-        const highestPrio = buttons[0].building.prio;
-        const highestPrioBuildings = buttons.filter(button => button.building.prio === highestPrio);
-        buttons = buttons.filter(button => button.building.prio < highestPrio);
-        while (!state.scriptPaused && highestPrioBuildings.length) {
-          let shouldBuild = true;
-          const button = highestPrioBuildings.shift();
-          if (!button.building.isSafe && button.building.requires.length) {
-            shouldBuild = !button.building.requires.find(req => !resources.get(req.resource) || resources.get(req.resource)[req.parameter] <= req.minValue);
-            if (button.building.key === 'common_house' && !button.count) {
-              shouldBuild = true;
-            }
-          }
-          if (shouldBuild) {
-            button.element.click();
-            logger({
-              msgLevel: 'log',
-              msg: `Building ${button.building.id}`
-            });
-            refreshButtons = true;
-            await sleep(25);
-            if (!navigation.checkPage(CONSTANTS.PAGES.BUILD)) return;
-          }
-        }
-        await sleep(1400);
-        if (refreshButtons) {
-          buttons = getAllButtons$4();
-        }
-      }
-    }
-    const buildingsList = getBuildingsList$1();
-    state.buildings = selectors.getAllButtons(false).map(button => {
-      const id = reactUtil.getNearestKey(button, 6);
-      let count = reactUtil.getGameData().idxs.buildings[id] ? reactUtil.getGameData().idxs.buildings[id] : 0;
-      const building = buildingsList.find(building => keyGen.building.key(building.key) === id);
-      if (!building) {
-        return {};
-      }
-      if (button.className.includes('btn-cap') && building.cap) {
-        count = building.cap;
-      }
-      return {
-        id: id,
-        count: count,
-        canBuild: !button.classList.toString().includes('btn-off'),
-        ...building
-      };
-    }).filter(building => building.id);
-  };
-  var BuildCity = {
-    page: CONSTANTS.PAGES.BUILD,
-    subpage: CONSTANTS.SUBPAGES.CITY,
-    enabled: () => userEnabled$7() && navigation.hasPage(CONSTANTS.PAGES.BUILD) && getBuildingsList$1().length,
-    action: async () => {
-      await navigation.switchSubPage(CONSTANTS.SUBPAGES.CITY, CONSTANTS.PAGES.BUILD);
-      if (navigation.checkPage(CONSTANTS.PAGES.BUILD)) await executeAction$7();
-    }
-  };
+  localStorage.get('lastSell') || {};
 
-  const getBuildingsList = () => {
-    const buildingsObject = state.options.pages[CONSTANTS.PAGES.BUILD].subpages[CONSTANTS.SUBPAGES.COLONY].options;
-    if (Object.keys(buildingsObject).length) {
-      let buildingsList = Object.keys(buildingsObject).filter(key => !key.includes('prio_')).filter(key => !!buildingsObject[key]).filter(key => !!buildingsObject[`prio_${key}`]).map(key => {
-        const building = {
-          key: key,
-          id: translate(key, 'bui_'),
-          max: buildingsObject[key] === -1 ? 999 : buildingsObject[key],
-          prio: buildingsObject[`prio_${key}`],
-          isSafe: true
-        };
-        const buildingData = buildings.find(building => building.id === key);
-        if (buildingData) {
-          if (buildingData.gen) {
-            const negativeGen = buildingData.gen.filter(gen => gen.value < 0 && gen.type === 'resource');
-            building.isSafe = !negativeGen.length;
-            if (negativeGen.length) {
-              const requires = negativeGen.map(gen => {
-                return {
-                  resource: gen.id,
-                  parameter: 'speed',
-                  minValue: Math.abs(gen.value)
-                };
-              });
-              building.requires = requires;
-            }
-          }
-        }
-        return {
-          ...buildingData,
-          ...building
-        };
-      }).sort((a, b) => {
-        return b.prio - a.prio;
-      });
-      return buildingsList;
-    }
-    return [];
-  };
-  const userEnabled$6 = () => {
-    return (state.options.pages[CONSTANTS.PAGES.BUILD].enabled || false) && (state.options.pages[CONSTANTS.PAGES.BUILD].subpages[CONSTANTS.SUBPAGES.COLONY].enabled || false);
-  };
-  const getAllButtons$3 = () => {
-    const buildingsList = getBuildingsList();
-    const buttons = selectors.getAllButtons(true).map(button => {
-      const id = reactUtil.getNearestKey(button, 6);
-      const count = button.querySelector('span') ? numberParser.parse(button.querySelector('span').innerText) : 0;
-      return {
-        id: id,
-        element: button,
-        count: count,
-        building: buildingsList.find(building => keyGen.building.key(building.key) === id)
-      };
-    }).filter(button => button.building && button.count < button.building.max).sort((a, b) => {
-      if (a.building.prio !== b.building.prio) {
-        return b.building.prio - a.building.prio;
-      }
-      return a.count - b.count;
-    });
-    return buttons;
-  };
-  const executeAction$6 = async () => {
-    let buttons = getAllButtons$3();
-    if (buttons.length) {
-      while (!state.scriptPaused && buttons.length) {
-        let refreshButtons = false;
-        const highestPrio = buttons[0].building.prio;
-        const highestPrioBuildings = buttons.filter(button => button.building.prio === highestPrio);
-        buttons = buttons.filter(button => button.building.prio < highestPrio);
-        while (!state.scriptPaused && highestPrioBuildings.length) {
-          let shouldBuild = true;
-          const button = highestPrioBuildings.shift();
-          if (!button.building.isSafe && button.building.requires.length) {
-            shouldBuild = !button.building.requires.find(req => !resources.get(req.resource) || resources.get(req.resource)[req.parameter] <= req.minValue);
-          }
-          if (shouldBuild) {
-            button.element.click();
-            logger({
-              msgLevel: 'log',
-              msg: `Building ${button.building.id}`
-            });
-            refreshButtons = true;
-            await sleep(25);
-            if (!navigation.checkPage(CONSTANTS.PAGES.BUILD, CONSTANTS.SUBPAGES.COLONY)) return;
-          }
-        }
-        await sleep(1400);
-        if (refreshButtons) {
-          buttons = getAllButtons$3();
-        }
-      }
-    }
-    const buildingsList = getBuildingsList();
-    state.buildings = selectors.getAllButtons(false).map(button => {
-      const id = reactUtil.getNearestKey(button, 6);
-      let count = button.querySelector('span') ? numberParser.parse(button.querySelector('span').innerText) : 0;
-      const building = buildingsList.find(building => keyGen.building.key(building.key) === id);
-      if (!building) {
-        return {};
-      }
-      if (button.className.includes('btn-cap') && building.cap) {
-        count = building.cap;
-      }
-      return {
-        id: id,
-        count: count,
-        canBuild: !button.classList.toString().includes('btn-off'),
-        ...building
-      };
-    }).filter(building => building.id);
-  };
-  var BuildColony = {
-    page: CONSTANTS.PAGES.BUILD,
-    subpage: CONSTANTS.SUBPAGES.COLONY,
-    enabled: () => userEnabled$6() && navigation.hasPage(CONSTANTS.PAGES.BUILD) && getBuildingsList().length,
-    action: async () => {
-      await navigation.switchSubPage(CONSTANTS.SUBPAGES.COLONY, CONSTANTS.PAGES.BUILD);
-      if (navigation.checkPage(CONSTANTS.PAGES.BUILD, CONSTANTS.SUBPAGES.COLONY)) await executeAction$6();
-    }
-  };
-
-  const resourcesToTrade = ['cow', 'horse', 'food', 'copper', 'wood', 'stone', 'iron', 'tools'];
-  const timeToFillResource = 90;
-  const timeToWaitUntilFullGold = 60;
-  const secondsBetweenSells = 90;
-  const getTimeToFillResource = () => {
-    return state.options.pages[CONSTANTS.PAGES.MARKETPLACE].options.timeToFillResource || timeToFillResource;
-  };
-  const getTimeToWaitUntilFullGold = () => {
-    return state.options.pages[CONSTANTS.PAGES.MARKETPLACE].options.timeToWaitUntilFullGold || timeToWaitUntilFullGold;
-  };
-  const getSecondsBetweenSells = () => {
-    return state.options.pages[CONSTANTS.PAGES.MARKETPLACE].options.secondsBetweenSells || secondsBetweenSells;
-  };
-  const getResourcesToTrade = () => {
-    const userResourcesToTrade = Object.keys(state.options.pages[CONSTANTS.PAGES.MARKETPLACE].options).filter(key => key.includes('resource_') && state.options.pages[CONSTANTS.PAGES.MARKETPLACE].options[key]).map(key => key.replace('resource_', ''));
-    return userResourcesToTrade.length ? userResourcesToTrade : resourcesToTrade;
-  };
-  const lastSell = localStorage.get('lastSell') || {};
-  const shouldSell = () => {
-    return !!getResourcesToTrade().find(resName => {
-      if (!lastSell[resName]) lastSell[resName] = 0;
-      const res = resources.get(resName);
-      if (res && (res.current === res.max || res.current + res.speed * getTimeToFillResource() >= res.max) && lastSell[resName] + getSecondsBetweenSells() * 1000 < new Date().getTime()) return true;
-    });
-  };
-  const hasNotEnoughGold = () => {
-    const gold = resources.get('gold');
-    return gold.current + gold.speed * getTimeToWaitUntilFullGold() < gold.max;
-  };
-  const userEnabled$5 = () => {
-    return state.options.pages[CONSTANTS.PAGES.MARKETPLACE].enabled || false;
-  };
-  const executeAction$5 = async () => {
-    let gold = resources.get('gold');
-    if (gold && gold.current < gold.max && shouldSell()) {
-      const resourceHolders = [];
-      [...document.querySelectorAll('div > div.tab-container > div > div > div')].forEach(resourceHolder => {
-        const resKey = reactUtil.getNearestKey(resourceHolder, 2);
-        if (resKey) {
-          const resName = keyGen.market.id(resKey);
-          const res = resources.get(resName);
-          if (getResourcesToTrade().includes(resName) && res && (res.current === res.max || res.current + res.speed * getTimeToFillResource() >= res.max)) {
-            resourceHolders.push(resourceHolder);
-          }
-        }
-      });
-      let goldEarned = 0;
-      let soldTotals = {};
-      for (let i = 0; i < resourceHolders.length && !state.scriptPaused; i++) {
-        gold = resources.get('gold');
-        const resourceHolder = resourceHolders[i];
-        const resKey = reactUtil.getNearestKey(resourceHolder, 2);
-        const resName = keyGen.market.id(resKey);
-        let res = resources.get(resName);
-        const initialPrice = numberParser.parse(resourceHolder.querySelector('div:nth-child(2) > div > table > tbody > tr > td:nth-child(2)').innerText);
-        let price = initialPrice;
-        let sellButtons = resourceHolder.querySelectorAll('div > div.grid.gap-3 button.btn-red:not(.btn-dark)');
-        while (!state.scriptPaused && sellButtons && sellButtons.length && gold.current < gold.max && res.current + res.speed * getTimeToFillResource() * 2 >= res.max) {
-          let maxSellButton = 2;
-          const missingResToSell = Math.ceil((gold.max - gold.current) / price);
-          if (missingResToSell < 80) {
-            maxSellButton = 0;
-          } else if (missingResToSell < 800) {
-            maxSellButton = 1;
-          }
-          maxSellButton = Math.min(maxSellButton, sellButtons.length - 1);
-          sellButtons[maxSellButton].click();
-          lastSell[resName] = new Date().getTime();
-          soldTotals[resName] = soldTotals[resName] ? soldTotals[resName] : {
-            amount: 0,
-            gold: 0
-          };
-          soldTotals[resName].amount += +sellButtons[maxSellButton].innerText;
-          soldTotals[resName].gold += +sellButtons[maxSellButton].innerText * price;
-          logger({
-            msgLevel: 'debug',
-            msg: `Selling ${sellButtons[maxSellButton].innerText} of ${res.name} for ${price}`
-          });
-          goldEarned += numberParser.parse(sellButtons[maxSellButton].innerText) * price;
-          await sleep(10);
-          if (!navigation.checkPage(CONSTANTS.PAGES.MARKETPLACE)) return;
-          sellButtons = resourceHolder.querySelectorAll('div:nth-child(2) > div.grid.gap-3 button:not(.btn-dark)');
-          gold = resources.get('gold');
-          res = resources.get(resName);
-          price = numberParser.parse(resourceHolder.querySelector('div:nth-child(2) > div > table > tbody > tr > td:nth-child(2)').innerText);
-          await sleep(25);
-          if (price / initialPrice < 0.1) {
-            break;
-          }
-        }
-      }
-      if (goldEarned) {
-        const totals = Object.keys(soldTotals).filter(resName => soldTotals[resName] && soldTotals[resName].gold && soldTotals[resName].amount).map(resName => `${resName}: ${new Intl.NumberFormat().format(soldTotals[resName].amount)} units for ${new Intl.NumberFormat().format(Math.round(soldTotals[resName].gold))} gold (avg price: ${(soldTotals[resName].gold / soldTotals[resName].amount).toFixed(2)})`);
-        logger({
-          msgLevel: 'log',
-          msg: `Earned ${new Intl.NumberFormat().format(goldEarned)} gold on Marketplace [${totals.join(', ')}]`
-        });
-        localStorage.set('lastSell', lastSell);
-      }
-    }
-  };
-  var Marketplace = {
-    page: CONSTANTS.PAGES.MARKETPLACE,
-    enabled: () => userEnabled$5() && navigation.hasPage(CONSTANTS.PAGES.MARKETPLACE) && hasNotEnoughGold() && shouldSell(),
-    action: async () => {
-      await navigation.switchPage(CONSTANTS.PAGES.MARKETPLACE);
-      if (navigation.checkPage(CONSTANTS.PAGES.MARKETPLACE)) await executeAction$5();
-    }
-  };
-
-  const hasUnassignedPopulation = () => {
-    let unassignedPopulation = false;
-    const navButtons = navigation.getPagesSelector();
-    const pageIndex = CONSTANTS.PAGES_INDEX[CONSTANTS.PAGES.POPULATION];
-    navButtons.forEach(button => {
-      if (reactUtil.getBtnIndex(button, 1) === pageIndex) {
-        unassignedPopulation = !!button.querySelector('span');
-      }
-    });
-    return unassignedPopulation;
-  };
-  const shouldRebalance = () => {
-    return state.options.pages[CONSTANTS.PAGES.POPULATION].options.populationRebalanceTime > 0 && (!state.lastVisited.populationRebalance || state.lastVisited.populationRebalance + state.options.pages[CONSTANTS.PAGES.POPULATION].options.populationRebalanceTime * 60 * 1000 < new Date().getTime());
-  };
-  const allJobs = jobs.filter(job => job.gen && job.gen.length).map(job => {
+  jobs.filter(job => job.gen && job.gen.length).map(job => {
     return {
       ...job,
       id: translate(job.id, 'pop_'),
@@ -34199,693 +33281,6 @@ const taVersion = "4.8.1";
       })
     };
   });
-  const userEnabled$4 = () => {
-    return state.options.pages[CONSTANTS.PAGES.POPULATION].enabled || false;
-  };
-  let allowedJobs;
-  const getAllJobs = () => {
-    const jobsOptions = state.options.pages[CONSTANTS.PAGES.POPULATION].options;
-    if (Object.keys(jobsOptions).length) {
-      let allowedJobs = Object.keys(jobsOptions).filter(key => !key.includes('prio_')).filter(key => !!jobsOptions[key]).filter(key => !!jobsOptions[`prio_${key}`]).map(key => {
-        const jobData = allJobs.find(job => job.key === key) || {};
-        const job = {
-          ...jobData,
-          max: jobsOptions[key] === -1 ? 999 : jobsOptions[key],
-          prio: jobsOptions[`prio_${key}`]
-        };
-        return job;
-      });
-      return allowedJobs;
-    }
-    return [];
-  };
-  const getAllAvailableJobs = () => {
-    const container = selectors.getActivePageContent();
-    const availableJobs = [...container.querySelectorAll('h5')].map(job => {
-      const jobTitle = reactUtil.getNearestKey(job, 7);
-      return {
-        ...allowedJobs.find(allowedJob => keyGen.population.key(allowedJob.key) === jobTitle),
-        container: job.parentElement.parentElement,
-        current: +job.parentElement.parentElement.querySelector('input').value.split('/').shift().trim(),
-        maxAvailable: +job.parentElement.parentElement.querySelector('input').value.split('/').pop().trim()
-      };
-    }).filter(job => job.id && !!job.container.querySelector('button.btn-green') && job.current < Math.min(job.max, job.maxAvailable)).sort((a, b) => {
-      if (a.prio === b.prio) {
-        return a.current - b.current;
-      }
-      return b.prio - a.prio;
-    });
-    return availableJobs;
-  };
-  const executeAction$4 = async () => {
-    allowedJobs = getAllJobs();
-    if (allowedJobs.length && shouldRebalance()) {
-      const unassignAllButton = document.querySelector('div.flex.justify-center.mx-auto.pt-3.font-bold.text-lg > button');
-      if (unassignAllButton) {
-        unassignAllButton.click();
-        logger({
-          msgLevel: 'log',
-          msg: 'Unassigning all workers'
-        });
-        await sleep(10);
-      }
-      state.lastVisited.populationRebalance = new Date().getTime();
-      localStorage.set('lastVisited', state.lastVisited);
-    }
-    let canAssignJobs = true;
-    const container = selectors.getActivePageContent();
-    let availablePop = container.querySelector('div > span.ml-2').textContent.split('/').map(pop => numberParser.parse(pop.trim()));
-    let availableJobs = getAllAvailableJobs();
-    if (availablePop[0] > 0 && availableJobs.length) {
-      const minimumFood = state.options.pages[CONSTANTS.PAGES.POPULATION].options.minimumFood || 0;
-      const unsafeJobRatio = state.options.pages[CONSTANTS.PAGES.POPULATION].options.unsafeJobRatio ?? 2;
-      while (!state.scriptPaused && canAssignJobs) {
-        canAssignJobs = false;
-        if (availableJobs.length) {
-          const foodJob = availableJobs.find(job => job.resourcesGenerated.find(res => res.id === 'food'));
-          if (foodJob && resources.get('food').speed <= minimumFood && foodJob.current < foodJob.maxAvailable) {
-            const addJobButton = foodJob.container.querySelector('button.btn-green');
-            if (addJobButton) {
-              logger({
-                msgLevel: 'log',
-                msg: `Assigning worker as ${foodJob.id}`
-              });
-              addJobButton.click();
-              canAssignJobs = true;
-              foodJob.current += 1;
-              await sleep(20);
-              if (!navigation.checkPage(CONSTANTS.PAGES.POPULATION)) return;
-            }
-          } else {
-            let unassigned = container.querySelector('div > span.ml-2').textContent.split('/').map(pop => numberParser.parse(pop.trim())).shift();
-            if (unassigned > 0) {
-              const resourcesToProduce = ['natronite', 'saltpetre', 'tools', 'wood', 'stone', 'iron', 'copper', 'mana', 'faith', 'research', 'materials', 'steel', 'supplies', 'gold', 'crystal', 'horse', 'cow', 'food'].filter(res => resources.get(res)).filter(res => availableJobs.find(job => job.resourcesGenerated.find(resGen => resGen.id === res)));
-              const resourcesWithNegativeGen = resourcesToProduce.filter(res => resources.get(res) && resources.get(res).speed < 0);
-              const resourcesWithNoGen = resourcesToProduce.filter(res => !resourcesWithNegativeGen.includes(res) && resources.get(res) && !resources.get(res).speed);
-              const resourcesSorted = resourcesWithNegativeGen.concat(resourcesWithNoGen);
-              if (resourcesSorted.length) {
-                for (let i = 0; i < resourcesSorted.length && !state.scriptPaused; i++) {
-                  if (unassigned === 0) break;
-                  const resourceName = resourcesSorted[i];
-                  const jobsForResource = availableJobs.filter(job => job.current < job.max && job.resourcesGenerated.find(resGen => resGen.id === resourceName)).sort((a, b) => b.resourcesGenerated.find(resGen => resGen.id === resourceName).value - a.resourcesGenerated.find(resGen => resGen.id === resourceName).value);
-                  if (jobsForResource.length) {
-                    for (let i = 0; i < jobsForResource.length && !state.scriptPaused; i++) {
-                      if (unassigned === 0) break;
-                      const job = jobsForResource[i];
-                      let isSafeToAdd = job.current < Math.min(job.max, job.maxAvailable);
-                      const isFoodJob = !!job.resourcesGenerated.find(res => res.id === 'food');
-                      if (isFoodJob) {
-                        isSafeToAdd = isSafeToAdd || resources.get('food').speed <= minimumFood && foodJob.current < foodJob.maxAvailable;
-                      }
-                      if (!job.isSafe) {
-                        job.resourcesUsed.every(resUsed => {
-                          const res = resources.get(resUsed.id);
-                          if (!res || res.speed <= Math.abs(resUsed.value * unsafeJobRatio)) {
-                            isSafeToAdd = false;
-                          }
-                          if (res && resUsed.id === 'food' && res.speed - resUsed.value < minimumFood) {
-                            const foodJob = getAllAvailableJobs().find(job => job.resourcesGenerated.find(res => res.id === 'food'));
-                            if (foodJob) {
-                              i -= 1;
-                              job = foodJob;
-                              isSafeToAdd = true;
-                              return false;
-                            } else {
-                              isSafeToAdd = false;
-                            }
-                          }
-                          return isSafeToAdd;
-                        });
-                      }
-                      if (isSafeToAdd) {
-                        const addJobButton = job.container.querySelector('button.btn-green');
-                        if (addJobButton) {
-                          logger({
-                            msgLevel: 'log',
-                            msg: `Assigning worker as ${job.id}`
-                          });
-                          addJobButton.click();
-                          job.current += 1;
-                          unassigned -= 1;
-                          canAssignJobs = !!unassigned;
-                          await sleep(20);
-                          if (!navigation.checkPage(CONSTANTS.PAGES.POPULATION)) return;
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-              availableJobs = getAllAvailableJobs();
-              for (let i = 0; i < availableJobs.length; i++) {
-                if (!navigation.checkPage(CONSTANTS.PAGES.POPULATION)) break;
-                if (state.scriptPaused) break;
-                const job = availableJobs[i];
-                let isSafeToAdd = job.current < Math.min(job.max, job.maxAvailable);
-                const isFoodJob = !!job.resourcesGenerated.find(res => res.id === 'food');
-                if (isFoodJob) {
-                  isSafeToAdd = isSafeToAdd || resources.get('food').speed <= minimumFood && foodJob.current < foodJob.maxAvailable;
-                }
-                if (!job.isSafe) {
-                  job.resourcesUsed.every(resUsed => {
-                    const res = resources.get(resUsed.id);
-                    if (!res || res.speed <= Math.abs(resUsed.value * unsafeJobRatio)) {
-                      isSafeToAdd = false;
-                    }
-                    if (res && resUsed.id === 'food' && res.speed - resUsed.value < minimumFood) {
-                      const foodJob = availableJobs.find(job => job.resourcesGenerated.find(res => res.id === 'food'));
-                      if (foodJob) {
-                        job = foodJob;
-                        isSafeToAdd = true;
-                        return false;
-                      } else {
-                        isSafeToAdd = false;
-                      }
-                    }
-                    return isSafeToAdd;
-                  });
-                }
-                if (isSafeToAdd && !state.scriptPaused) {
-                  const addJobButton = job.container.querySelector('button.btn-green');
-                  if (addJobButton) {
-                    logger({
-                      msgLevel: 'log',
-                      msg: `Assigning worker as ${job.id}`
-                    });
-                    addJobButton.click();
-                    job.current += 1;
-                    unassigned -= 1;
-                    canAssignJobs = !!unassigned;
-                    await sleep(20);
-                    if (!navigation.checkPage(CONSTANTS.PAGES.POPULATION)) return;
-                    break;
-                  }
-                }
-              }
-            }
-          }
-          availableJobs = getAllAvailableJobs();
-        }
-        const unassigned = container.querySelector('div > span.ml-2').textContent.split('/').map(pop => numberParser.parse(pop.trim())).shift();
-        if (unassigned === 0) {
-          canAssignJobs = false;
-        }
-        await sleep(10);
-        if (!navigation.checkPage(CONSTANTS.PAGES.POPULATION)) return;
-      }
-    }
-  };
-  var Population = {
-    page: CONSTANTS.PAGES.POPULATION,
-    enabled: () => userEnabled$4() && navigation.hasPage(CONSTANTS.PAGES.POPULATION) && (hasUnassignedPopulation() || shouldRebalance()) && getAllJobs().length,
-    action: async () => {
-      await navigation.switchPage(CONSTANTS.PAGES.POPULATION);
-      if (navigation.checkPage(CONSTANTS.PAGES.POPULATION)) await executeAction$4();
-    }
-  };
-
-  const dangerousFightsMapping = {
-    moonlight_night: 'army_of_goblin',
-    dragon_assault: 'army_of_dragon',
-    mysterious_robbery: 'fallen_angel_army_1',
-    fallen_angel: 'fallen_angel_army_2',
-    orc_horde: 'orc_horde_boss',
-    kobold_nation: 'king_kobold_nation',
-    barbarian_tribes: 'barbarian_horde'
-  };
-  const userEnabled$3 = () => {
-    return state.options.pages[CONSTANTS.PAGES.RESEARCH].subpages[CONSTANTS.SUBPAGES.RESEARCH].enabled || false;
-  };
-  const getAllowedResearch = () => {
-    const researchOptions = state.options.pages[CONSTANTS.PAGES.RESEARCH].subpages[CONSTANTS.SUBPAGES.RESEARCH].options;
-    if (Object.keys(researchOptions).length) {
-      let allowedResearch = Object.keys(researchOptions).filter(key => !!researchOptions[key]).map(key => {
-        const research = {
-          key: key,
-          id: translate(key, 'tec_'),
-          prio: researchOptions[key]
-        };
-        const researchData = tech.find(technology => technology.id === key);
-        return {
-          ...researchData,
-          ...research
-        };
-      });
-      return allowedResearch;
-    }
-    return [];
-  };
-  const getAllButtons$2 = () => {
-    const buttonsList = selectors.getAllButtons(true);
-    const allowedResearch = getAllowedResearch().map(tech => {
-      let button = buttonsList.find(button => reactUtil.getNearestKey(button, 6) === keyGen.research.key(tech.key));
-      return {
-        ...tech,
-        button
-      };
-    }).filter(tech => tech.button).sort((a, b) => b.prio - a.prio);
-    return allowedResearch;
-  };
-  const executeAction$3 = async () => {
-    let ignoredTech = [];
-    let buttonsList = getAllButtons$2();
-    if (buttonsList.length) {
-      while (!state.scriptPaused && buttonsList.length) {
-        const highestPrio = buttonsList[0].prio;
-        buttonsList = buttonsList.filter(tech => tech.prio === highestPrio);
-        for (let i = 0; i < buttonsList.length; i++) {
-          const research = buttonsList[i];
-          if (state.options.pages[CONSTANTS.PAGES.RESEARCH].subpages[CONSTANTS.SUBPAGES.RESEARCH].options.dangerousFights && dangerousFightsMapping[research.key]) {
-            const canWinBattle = armyCalculator.canWinBattle(dangerousFightsMapping[research.key], true, false);
-            if (canWinBattle) {
-              const canWinNow = armyCalculator.canWinBattle(dangerousFightsMapping[research.key], true, true);
-              if (canWinNow) {
-                state.stopAttacks = false;
-                logger({
-                  msgLevel: 'debug',
-                  msg: `Will try starting a dangerous research. Research: ${research.id} (${research.key}). Fight: ${dangerousFightsMapping[research.key]}`
-                });
-              } else {
-                ignoredTech.push(research.id);
-                logger({
-                  msgLevel: 'debug',
-                  msg: `Can win ${research.id}, but we need to unassign all units first.`
-                });
-                state.stopAttacks = true;
-                continue;
-              }
-            } else {
-              ignoredTech.push(research.id);
-              logger({
-                msgLevel: 'debug',
-                msg: `Can't win ${research.id}, ignoring it for this round.`
-              });
-              continue;
-            }
-          }
-          research.button.click();
-          logger({
-            msgLevel: 'log',
-            msg: `Researching ${research.id}`
-          });
-          await sleep(25);
-          if (research.confirm) {
-            if (!navigation.checkPage(CONSTANTS.PAGES.RESEARCH, CONSTANTS.SUBPAGES.RESEARCH)) return;
-            await sleep(1000);
-            const redConfirmButton = [...document.querySelectorAll('#headlessui-portal-root .btn.btn-red')].find(button => reactUtil.getBtnIndex(button, 0) === 1);
-            if (redConfirmButton) {
-              redConfirmButton.click();
-              await sleep(4000);
-              if (!navigation.checkPage(CONSTANTS.PAGES.RESEARCH, CONSTANTS.SUBPAGES.RESEARCH)) return;
-            }
-          }
-          if (!navigation.checkPage(CONSTANTS.PAGES.RESEARCH, CONSTANTS.SUBPAGES.RESEARCH)) return;
-        }
-        await sleep(3100);
-        buttonsList = getAllButtons$2().filter(tech => !ignoredTech.includes(tech.id));
-      }
-    }
-  };
-  const hasResearches = () => {
-    const pageIndex = CONSTANTS.PAGES_INDEX[CONSTANTS.PAGES.RESEARCH];
-    const resNavButton = navigation.getPagesSelector().find(page => reactUtil.getBtnIndex(page, 1) === pageIndex);
-    if (resNavButton) {
-      const researchesAvailable = resNavButton.querySelector('span.inline-block');
-      if (researchesAvailable) {
-        return true;
-      }
-    }
-    return false;
-  };
-  var ResearchResearch = {
-    page: CONSTANTS.PAGES.RESEARCH,
-    subpage: CONSTANTS.SUBPAGES.RESEARCH,
-    enabled: () => userEnabled$3() && navigation.hasPage(CONSTANTS.PAGES.RESEARCH) && getAllowedResearch().length && hasResearches(),
-    action: async () => {
-      await navigation.switchSubPage(CONSTANTS.SUBPAGES.RESEARCH, CONSTANTS.PAGES.RESEARCH);
-      if (navigation.checkPage(CONSTANTS.PAGES.RESEARCH, CONSTANTS.SUBPAGES.RESEARCH)) await executeAction$3();
-    }
-  };
-
-  const userEnabled$2 = () => {
-    return (state.options.pages[CONSTANTS.PAGES.MAGIC].enabled || false) && (state.options.pages[CONSTANTS.PAGES.MAGIC].subpages[CONSTANTS.SUBPAGES.PRAYERS].enabled || false);
-  };
-  const getAllowedPrayers = () => {
-    const prayersOptions = state.options.pages[CONSTANTS.PAGES.MAGIC].subpages[CONSTANTS.SUBPAGES.PRAYERS].options;
-    if (Object.keys(prayersOptions).length) {
-      let allowedPrayers = Object.keys(prayersOptions).filter(key => !!prayersOptions[key]).map(key => {
-        const prayer = {
-          key: key,
-          id: translate(key, 'fai_'),
-          prio: prayersOptions[key]
-        };
-        const prayerData = spells.find(spell => spell.id === key);
-        return {
-          ...prayerData,
-          ...prayer
-        };
-      });
-      return allowedPrayers;
-    }
-    return [];
-  };
-  const getAllButtons$1 = () => {
-    const buttonsList = selectors.getAllButtons(true, ':not(.btn-progress)');
-    const allowedPrayers = getAllowedPrayers().map(prayer => {
-      const button = buttonsList.find(button => reactUtil.getNearestKey(button, 6) === keyGen.magic.key(prayer.key));
-      return {
-        ...prayer,
-        button
-      };
-    }).filter(prayer => prayer.button).sort((a, b) => b.prio - a.prio);
-    return allowedPrayers;
-  };
-  const executeAction$2 = async () => {
-    let buttonsList = getAllButtons$1();
-    if (buttonsList.length) {
-      while (!state.scriptPaused && buttonsList.length) {
-        const highestPrio = buttonsList[0].prio;
-        buttonsList = buttonsList.filter(prayer => prayer.prio === highestPrio);
-        for (let i = 0; i < buttonsList.length; i++) {
-          const prayer = buttonsList[i];
-          prayer.button.click();
-          logger({
-            msgLevel: 'log',
-            msg: `Researching prayer ${prayer.id}`
-          });
-          await sleep(25);
-          if (!navigation.checkPage(CONSTANTS.PAGES.MAGIC, CONSTANTS.SUBPAGES.PRAYERS)) return;
-        }
-        await sleep(3100);
-        buttonsList = getAllButtons$1();
-      }
-    }
-  };
-  var MagicPrayers = {
-    page: CONSTANTS.PAGES.MAGIC,
-    subpage: CONSTANTS.SUBPAGES.PRAYERS,
-    enabled: () => userEnabled$2() && navigation.hasPage(CONSTANTS.PAGES.MAGIC) && getAllowedPrayers().length && resources.get('faith') && resources.get('faith').max,
-    action: async () => {
-      await navigation.switchSubPage(CONSTANTS.SUBPAGES.PRAYERS, CONSTANTS.PAGES.MAGIC);
-      if (navigation.checkPage(CONSTANTS.PAGES.MAGIC, CONSTANTS.SUBPAGES.PRAYERS)) await executeAction$2();
-    }
-  };
-
-  const userEnabled$1 = () => {
-    return (state.options.pages[CONSTANTS.PAGES.MAGIC].enabled || false) && (state.options.pages[CONSTANTS.PAGES.MAGIC].subpages[CONSTANTS.SUBPAGES.SPELLS].enabled || false);
-  };
-  const getAllowedSpells = () => {
-    const spellOptions = state.options.pages[CONSTANTS.PAGES.MAGIC].subpages[CONSTANTS.SUBPAGES.SPELLS].options;
-    if (Object.keys(spellOptions).length) {
-      let allowedSpells = Object.keys(spellOptions).map(key => {
-        const spell = {
-          key: key,
-          id: translate(key, 'fai_'),
-          enabled: spellOptions[key]
-        };
-        const spellData = spells.find(spell => spell.id === key);
-        return {
-          ...spellData,
-          ...spell
-        };
-      }).filter(spell => spell.type && spell.gen);
-      return allowedSpells;
-    }
-    return [];
-  };
-  const getAllButtons = () => {
-    const allowedSpells = getAllowedSpells();
-    const buttonsList = selectors.getAllButtons(true).map(button => {
-      const spell = allowedSpells.find(spell => reactUtil.getNearestKey(button, 4) === keyGen.magic.key(spell.key));
-      return {
-        ...spell,
-        button
-      };
-    }).filter(spell => spell.button).sort((a, b) => a.gen.find(gen => gen.id === 'mana').value - b.gen.find(gen => gen.id === 'mana').value);
-    return buttonsList;
-  };
-  const executeAction$1 = async () => {
-    const buttonsList = getAllButtons();
-    const enabledSpells = buttonsList.filter(button => button.enabled);
-    const disabledSpells = buttonsList.filter(button => !button.enabled);
-    for (let i = 0; i < disabledSpells.length && !state.scriptPaused; i++) {
-      const spell = disabledSpells[i];
-      if (spell.button.classList.contains('btn-dark')) {
-        logger({
-          msgLevel: 'log',
-          msg: `Cancelling spell ${spell.id}`
-        });
-        spell.button.click();
-        await sleep(25);
-      }
-      if (!navigation.checkPage(CONSTANTS.PAGES.MAGIC, CONSTANTS.SUBPAGES.SPELLS)) return;
-    }
-    for (let i = 0; i < enabledSpells.length && !state.scriptPaused; i++) {
-      const spell = enabledSpells[i];
-      const hasEnoughMana = resources.get('mana').speed + spell.gen.find(gen => gen.id === 'mana').value > (state.options.pages[CONSTANTS.PAGES.MAGIC].subpages[CONSTANTS.SUBPAGES.SPELLS].options.minimumMana || 0);
-      if (!spell.button.classList.contains('btn-dark') && hasEnoughMana) {
-        logger({
-          msgLevel: 'log',
-          msg: `Casting spell ${spell.id}`
-        });
-        spell.button.click();
-        await sleep(25);
-      }
-      if (!navigation.checkPage(CONSTANTS.PAGES.MAGIC, CONSTANTS.SUBPAGES.SPELLS)) return;
-    }
-  };
-  var MagicSpells = {
-    page: CONSTANTS.PAGES.MAGIC,
-    subpage: CONSTANTS.SUBPAGES.SPELLS,
-    enabled: () => userEnabled$1() && navigation.hasPage(CONSTANTS.PAGES.MAGIC) && getAllowedSpells().length && resources.get('mana') && resources.get('mana').max,
-    action: async () => {
-      await navigation.switchSubPage(CONSTANTS.SUBPAGES.SPELLS, CONSTANTS.PAGES.MAGIC);
-      if (navigation.checkPage(CONSTANTS.PAGES.MAGIC, CONSTANTS.SUBPAGES.SPELLS)) await executeAction$1();
-    }
-  };
-
-  const isAtWar = () => {
-    return !![...document.querySelectorAll('p.text-red-700')].find(p => p.innerText.includes('You are now at war with this faction'));
-  };
-  const userEnabled = () => {
-    return state.options.pages[CONSTANTS.PAGES.DIPLOMACY].enabled || false;
-  };
-  const mapToFaction = button => {
-    let factionName = reactUtil.getNearestKey(button, 12);
-    let level = 0;
-    let parent = button.parentElement;
-    let factionNameEl;
-    while (!factionNameEl && level < 5) {
-      factionNameEl = parent.querySelector('div.font-bold > button.font-bold');
-      if (factionNameEl) ; else {
-        factionNameEl = null;
-        parent = parent.parentElement;
-        level += 1;
-      }
-    }
-    if (factionName && factionNameEl) {
-      const factionData = factions.find(faction => keyGen.diplomacy.key(faction.id) === factionName);
-      return {
-        ...factionData,
-        button,
-        level: level,
-        buttonCount: parent.querySelectorAll(`button.btn`).length,
-        key: factionData.id,
-        id: translate(factionData.id, 'dip_'),
-        option: state.options.pages[CONSTANTS.PAGES.DIPLOMACY].options[factionData.id]
-      };
-    }
-  };
-  const getFactionsWithButtons = () => {
-    const allButtons = selectors.getAllButtons(true).map(button => mapToFaction(button)).filter(button => button);
-    const listOfFactions = {};
-    for (let i = 0; i < allButtons.length; i++) {
-      const button = allButtons[i];
-      listOfFactions[button.key] = listOfFactions[button.key] ? listOfFactions[button.key] : button;
-      listOfFactions[button.key].buttons = listOfFactions[button.key].buttons ? listOfFactions[button.key].buttons : {};
-      let buttonType = undefined;
-      if (button.level === 2) {
-        buttonType = CONSTANTS.DIPLOMACY_BUTTONS.DELEGATION;
-      } else if (button.level === 3) {
-        if (button.button.classList.contains('btn-dark')) {
-          buttonType = CONSTANTS.DIPLOMACY_BUTTONS.CANCEL_TRADE;
-        } else {
-          buttonType = CONSTANTS.DIPLOMACY_BUTTONS.ACCEPT_TRADE;
-        }
-      } else if (button.level === 4) {
-        if (button.button.classList.contains('btn-blue')) {
-          buttonType = CONSTANTS.DIPLOMACY_BUTTONS.ALLY;
-        } else if (button.button.classList.contains('btn-green')) {
-          buttonType = CONSTANTS.DIPLOMACY_BUTTONS.IMPROVE_RELATIONSHIPS;
-        } else {
-          if (button.button.parentElement.parentElement.parentElement.className.includes('border-red')) {
-            buttonType = CONSTANTS.DIPLOMACY_BUTTONS.WAR;
-          } else {
-            buttonType = CONSTANTS.DIPLOMACY_BUTTONS.INSULT;
-          }
-        }
-      }
-      if (buttonType) {
-        listOfFactions[button.key].buttons[buttonType] = button.button;
-      }
-      delete listOfFactions[button.key].button;
-    }
-    return listOfFactions;
-  };
-  const executeAction = async () => {
-    let factionsWithButtons = getFactionsWithButtons();
-    let factionKeys = Object.keys(factionsWithButtons);
-    let tookAction = true;
-    let longAction = false;
-    while (!state.scriptPaused && tookAction) {
-      if (!navigation.checkPage(CONSTANTS.PAGES.DIPLOMACY)) return;
-      tookAction = false;
-      longAction = false;
-      for (let i = 0; i < factionKeys.length; i++) {
-        if (state.scriptPaused) return;
-        if (!navigation.checkPage(CONSTANTS.PAGES.DIPLOMACY)) return;
-        const faction = factionsWithButtons[factionKeys[i]];
-        if (faction.option && faction.option !== CONSTANTS.DIPLOMACY.DISABLED) {
-          if (faction.option !== CONSTANTS.DIPLOMACY.JUST_TRADE && faction.option !== CONSTANTS.DIPLOMACY.TRADE_AND_ALLY) {
-            if (faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.CANCEL_TRADE]) {
-              logger({
-                msgLevel: 'log',
-                msg: `Canceling trade with ${faction.id}`
-              });
-              tookAction = true;
-              faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.CANCEL_TRADE].click();
-            }
-          } else if (faction.option === CONSTANTS.DIPLOMACY.JUST_TRADE || faction.option === CONSTANTS.DIPLOMACY.TRADE_AND_ALLY) {
-            if (faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.ACCEPT_TRADE]) {
-              let canTrade;
-              if (!faction.commercial) {
-                canTrade = false;
-              } else {
-                canTrade = faction.commercial.filter(res => res.type === 'resource').every(res => {
-                  if (res.value < 0) {
-                    const currentRes = resources.get(res.id);
-                    return currentRes.speed > Math.abs(res.value);
-                  } else {
-                    return true;
-                  }
-                });
-              }
-              if (canTrade) {
-                logger({
-                  msgLevel: 'log',
-                  msg: `Starting trading with ${faction.id}`
-                });
-                tookAction = true;
-                faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.ACCEPT_TRADE].click();
-              }
-            }
-          }
-          if (faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.DELEGATION]) {
-            logger({
-              msgLevel: 'log',
-              msg: `Sending delegation to ${faction.id}`
-            });
-            longAction = true;
-            tookAction = true;
-            faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.DELEGATION].click();
-          } else if (faction.option === CONSTANTS.DIPLOMACY.GO_TO_WAR && state.options.pages[CONSTANTS.PAGES.ARMY].subpages[CONSTANTS.SUBPAGES.ATTACK].options[faction.key] && !isAtWar()) {
-            if (faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.INSULT]) {
-              logger({
-                msgLevel: 'log',
-                msg: `Insulting ${faction.id}`
-              });
-              longAction = true;
-              tookAction = true;
-              faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.INSULT].click();
-            }
-            if (faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.WAR]) {
-              const canWinBattle = armyCalculator.canWinBattle(faction.key, false, false);
-              if (canWinBattle) {
-                logger({
-                  msgLevel: 'log',
-                  msg: `Going to war with ${faction.id}`
-                });
-                tookAction = true;
-                faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.WAR].click();
-                await sleep(200);
-                const redConfirmButton = [...document.querySelectorAll('#headlessui-portal-root .btn.btn-red')].find(button => reactUtil.getBtnIndex(button, 0) === 1);
-                if (redConfirmButton) {
-                  redConfirmButton.click();
-                  await sleep(200);
-                }
-                await sleep(3100);
-              } else {
-                logger({
-                  msgLevel: 'debug',
-                  msg: `Can't win the fight against ${faction.id}, so no war is being started`
-                });
-              }
-            }
-          } else if (faction.option === CONSTANTS.DIPLOMACY.TRADE_AND_ALLY || faction.option === CONSTANTS.DIPLOMACY.ONLY_ALLY) {
-            if (faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.IMPROVE_RELATIONSHIPS]) {
-              logger({
-                msgLevel: 'log',
-                msg: `Improving relationships with ${faction.id}`
-              });
-              longAction = true;
-              tookAction = true;
-              faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.IMPROVE_RELATIONSHIPS].click();
-            }
-            if (faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.ALLY]) {
-              logger({
-                msgLevel: 'log',
-                msg: `Allying with ${faction.id}`
-              });
-              longAction = true;
-              tookAction = true;
-              faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.ALLY].click();
-            }
-          } else if (faction.option === CONSTANTS.DIPLOMACY.JUST_TRADE && !faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.CANCEL_TRADE] && !faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.ACCEPT_TRADE]) {
-            if (faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.IMPROVE_RELATIONSHIPS]) {
-              logger({
-                msgLevel: 'log',
-                msg: `Improving relationships with ${faction.id}`
-              });
-              longAction = true;
-              tookAction = true;
-              faction.buttons[CONSTANTS.DIPLOMACY_BUTTONS.IMPROVE_RELATIONSHIPS].click();
-            }
-          }
-        }
-      }
-      if (tookAction) {
-        if (longAction) {
-          await sleep(3100);
-        } else {
-          await sleep(25);
-        }
-        factionsWithButtons = getFactionsWithButtons();
-        factionKeys = Object.keys(factionsWithButtons);
-      }
-    }
-  };
-  var Diplomacy = {
-    page: CONSTANTS.PAGES.DIPLOMACY,
-    enabled: () => userEnabled() && navigation.hasPage(CONSTANTS.PAGES.DIPLOMACY),
-    action: async () => {
-      await navigation.switchPage(CONSTANTS.PAGES.DIPLOMACY);
-      if (navigation.checkPage(CONSTANTS.PAGES.DIPLOMACY)) await executeAction();
-    }
-  };
-
-  var pages = {
-    ArmyArmy,
-    ArmyExplore,
-    ArmyAttack,
-    BuildCity,
-    BuildColony,
-    Marketplace,
-    Population,
-    ResearchResearch,
-    MagicPrayers,
-    MagicSpells,
-    Diplomacy
-  };
 
   const calculateTippyTTF = () => {
     let potentialResourcesToFillTable = document.querySelectorAll('div.tippy-box > div.tippy-content > div > div > table');
@@ -34902,25 +33297,25 @@ const taVersion = "4.8.1";
         let dataList;
         let dataId;
         let reqField = 'req';
-        if (reqKey.startsWith(CONSTANTS.TOOLTIP_PREFIX.BUILDING)) {
+        if (reqKey.startsWith(constants.TOOLTIP_PREFIX.BUILDING)) {
           dataList = buildings;
-          dataId = reqKey.replace(CONSTANTS.TOOLTIP_PREFIX.BUILDING, '');
-        } else if (reqKey.startsWith(CONSTANTS.TOOLTIP_PREFIX.TECH)) {
+          dataId = reqKey.replace(constants.TOOLTIP_PREFIX.BUILDING, '');
+        } else if (reqKey.startsWith(constants.TOOLTIP_PREFIX.TECH)) {
           dataList = tech;
-          dataId = reqKey.replace(CONSTANTS.TOOLTIP_PREFIX.TECH, '');
-        } else if (reqKey.startsWith(CONSTANTS.TOOLTIP_PREFIX.PRAYER)) {
+          dataId = reqKey.replace(constants.TOOLTIP_PREFIX.TECH, '');
+        } else if (reqKey.startsWith(constants.TOOLTIP_PREFIX.PRAYER)) {
           dataList = spells;
-          dataId = reqKey.replace(CONSTANTS.TOOLTIP_PREFIX.PRAYER, '');
-        } else if (reqKey.startsWith(CONSTANTS.TOOLTIP_PREFIX.UNIT)) {
+          dataId = reqKey.replace(constants.TOOLTIP_PREFIX.PRAYER, '');
+        } else if (reqKey.startsWith(constants.TOOLTIP_PREFIX.UNIT)) {
           dataList = units;
-          dataId = reqKey.replace(CONSTANTS.TOOLTIP_PREFIX.UNIT, '');
-        } else if (reqKey.startsWith(CONSTANTS.TOOLTIP_PREFIX.FACTION_IMPROVE)) {
+          dataId = reqKey.replace(constants.TOOLTIP_PREFIX.UNIT, '');
+        } else if (reqKey.startsWith(constants.TOOLTIP_PREFIX.FACTION_IMPROVE)) {
           dataList = factions;
-          dataId = reqKey.replace(CONSTANTS.TOOLTIP_PREFIX.FACTION_IMPROVE, '');
+          dataId = reqKey.replace(constants.TOOLTIP_PREFIX.FACTION_IMPROVE, '');
           reqField = 'reqImproveRelationship';
-        } else if (reqKey.startsWith(CONSTANTS.TOOLTIP_PREFIX.FACTION_DELEGATION)) {
+        } else if (reqKey.startsWith(constants.TOOLTIP_PREFIX.FACTION_DELEGATION)) {
           dataList = factions;
-          dataId = reqKey.replace(CONSTANTS.TOOLTIP_PREFIX.FACTION_DELEGATION, '');
+          dataId = reqKey.replace(constants.TOOLTIP_PREFIX.FACTION_DELEGATION, '');
           reqField = 'reqDelegation';
         }
         if (!dataId || !dataList) {
@@ -35024,9 +33419,9 @@ const taVersion = "4.8.1";
     });
     return addAllButton;
   };
-  const allowedSubpages = [CONSTANTS.SUBPAGES.ATTACK, CONSTANTS.SUBPAGES.GARRISON, CONSTANTS.SUBPAGES.EXPLORE];
+  const allowedSubpages = [constants.SUBPAGES.ATTACK, constants.SUBPAGES.GARRISON, constants.SUBPAGES.EXPLORE];
   const addArmyButtons = () => {
-    const isCorrectPage = allowedSubpages.find(subpage => navigation.checkPage(CONSTANTS.PAGES.ARMY, subpage));
+    const isCorrectPage = allowedSubpages.find(subpage => navigation.checkPage(constants.PAGES.ARMY, subpage));
     if (isCorrectPage) {
       const container = document.querySelector('div.tab-container.sub-container:not(.addArmyButtonsDone)');
       if (container) {
@@ -35451,21 +33846,21 @@ const taVersion = "4.8.1";
 
     <div class="taTabs">
       <div class="taTab">
-        <input type="radio" name="topLevelOptions" id="topLevelOptions-${CONSTANTS.PAGES.BUILD}" checked class="taTab-switch">
-        <label for="topLevelOptions-${CONSTANTS.PAGES.BUILD}" class="taTab-label">${CONSTANTS.PAGES.BUILD}</label>
+        <input type="radio" name="topLevelOptions" id="topLevelOptions-${constants.PAGES.BUILD}" checked class="taTab-switch">
+        <label for="topLevelOptions-${constants.PAGES.BUILD}" class="taTab-label">${constants.PAGES.BUILD}</label>
         <div class="taTab-content">
           <p class="mb-2">Max values: -1 -> build unlimited; 0 -> do not build;</p>
           <div class="mb-2"><label>Enabled:
-            <input type="checkbox" data-page="${CONSTANTS.PAGES.BUILD}" data-key="enabled" class="option" />
+            <input type="checkbox" data-page="${constants.PAGES.BUILD}" data-key="enabled" class="option" />
           </label></div>
 
           <div class="taTabs">
             <div class="taTab">
-              <input type="radio" name="${CONSTANTS.PAGES.BUILD}PageOptions" id="${CONSTANTS.PAGES.BUILD}PageOptions-${CONSTANTS.SUBPAGES.CITY}" checked class="taTab-switch">
-              <label for="${CONSTANTS.PAGES.BUILD}PageOptions-${CONSTANTS.SUBPAGES.CITY}" class="taTab-label">${CONSTANTS.SUBPAGES.CITY}</label>
+              <input type="radio" name="${constants.PAGES.BUILD}PageOptions" id="${constants.PAGES.BUILD}PageOptions-${constants.SUBPAGES.CITY}" checked class="taTab-switch">
+              <label for="${constants.PAGES.BUILD}PageOptions-${constants.SUBPAGES.CITY}" class="taTab-label">${constants.SUBPAGES.CITY}</label>
               <div class="taTab-content">
                 <div class="mb-2"><label>Enabled:
-                  <input type="checkbox" data-page="${CONSTANTS.PAGES.BUILD}" data-subpage="${CONSTANTS.SUBPAGES.CITY}" data-key="enabled" class="option" />
+                  <input type="checkbox" data-page="${constants.PAGES.BUILD}" data-subpage="${constants.SUBPAGES.CITY}" data-key="enabled" class="option" />
                 </label></div>
 
                 <div class="mb-2">
@@ -35480,12 +33875,12 @@ const taVersion = "4.8.1";
                       ${buildings.filter(building => building.cat === cat).filter(building => building.tab === 1).map(building => {
     return `<div class="flex flex-col mb-2"><label><span class="font-bold">${translate(building.id)}</span><br/>
                           Max:
-                            <input type="number" data-page="${CONSTANTS.PAGES.BUILD}" data-subpage="${CONSTANTS.SUBPAGES.CITY}" data-key="options" data-subkey="${building.id}"
+                            <input type="number" data-page="${constants.PAGES.BUILD}" data-subpage="${constants.SUBPAGES.CITY}" data-key="options" data-subkey="${building.id}"
                             class="option text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
                             value="0" min="-1" max="${building.cap ? building.cap : 999}" step="1" /><br />
                           Prio: ${generatePrioritySelect({
-      page: CONSTANTS.PAGES.BUILD,
-      subpage: CONSTANTS.SUBPAGES.CITY,
+      page: constants.PAGES.BUILD,
+      subpage: constants.SUBPAGES.CITY,
       key: 'options',
       subkey: `prio_${building.id}`
     })}</label></div>`;
@@ -35497,11 +33892,11 @@ const taVersion = "4.8.1";
               </div>
             </div>
             <div class="taTab">
-              <input type="radio" name="${CONSTANTS.PAGES.BUILD}PageOptions" id="${CONSTANTS.PAGES.BUILD}PageOptions-${CONSTANTS.SUBPAGES.COLONY}" class="taTab-switch">
-              <label for="${CONSTANTS.PAGES.BUILD}PageOptions-${CONSTANTS.SUBPAGES.COLONY}" class="taTab-label">${CONSTANTS.SUBPAGES.COLONY}</label>
+              <input type="radio" name="${constants.PAGES.BUILD}PageOptions" id="${constants.PAGES.BUILD}PageOptions-${constants.SUBPAGES.COLONY}" class="taTab-switch">
+              <label for="${constants.PAGES.BUILD}PageOptions-${constants.SUBPAGES.COLONY}" class="taTab-label">${constants.SUBPAGES.COLONY}</label>
               <div class="taTab-content">
                 <div class="mb-2"><label>Enabled:
-                  <input type="checkbox" data-page="${CONSTANTS.PAGES.BUILD}" data-subpage="${CONSTANTS.SUBPAGES.COLONY}" data-key="enabled" class="option" />
+                  <input type="checkbox" data-page="${constants.PAGES.BUILD}" data-subpage="${constants.SUBPAGES.COLONY}" data-key="enabled" class="option" />
                 </label></div>
 
                 <div class="mb-2">
@@ -35516,12 +33911,12 @@ const taVersion = "4.8.1";
                       ${buildings.filter(building => building.cat === cat).filter(building => building.tab === 2).map(building => {
     return `<div class="flex flex-col mb-2"><label><span class="font-bold">${translate(building.id)}</span><br/>
                           Max:
-                            <input type="number" data-page="${CONSTANTS.PAGES.BUILD}" data-subpage="${CONSTANTS.SUBPAGES.COLONY}" data-key="options" data-subkey="${building.id}"
+                            <input type="number" data-page="${constants.PAGES.BUILD}" data-subpage="${constants.SUBPAGES.COLONY}" data-key="options" data-subkey="${building.id}"
                             class="option text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
                             value="0" min="-1" max="${building.cap ? building.cap : 999}" step="1" /><br />
                           Prio: ${generatePrioritySelect({
-      page: CONSTANTS.PAGES.BUILD,
-      subpage: CONSTANTS.SUBPAGES.COLONY,
+      page: constants.PAGES.BUILD,
+      subpage: constants.SUBPAGES.COLONY,
       key: 'options',
       subkey: `prio_${building.id}`
     })}</label></div>`;
@@ -35538,15 +33933,15 @@ const taVersion = "4.8.1";
       </div>
 
       <div class="taTab">
-        <input type="radio" name="topLevelOptions" id="topLevelOptions-${CONSTANTS.PAGES.RESEARCH}" class="taTab-switch">
-        <label for="topLevelOptions-${CONSTANTS.PAGES.RESEARCH}" class="taTab-label">${CONSTANTS.PAGES.RESEARCH}</label>
+        <input type="radio" name="topLevelOptions" id="topLevelOptions-${constants.PAGES.RESEARCH}" class="taTab-switch">
+        <label for="topLevelOptions-${constants.PAGES.RESEARCH}" class="taTab-label">${constants.PAGES.RESEARCH}</label>
         <div class="taTab-content">
           <div class="mb-2"><label>Enabled:
-            <input type="checkbox" data-page="${CONSTANTS.PAGES.RESEARCH}" data-subpage="${CONSTANTS.SUBPAGES.RESEARCH}" data-key="enabled" class="option" />
+            <input type="checkbox" data-page="${constants.PAGES.RESEARCH}" data-subpage="${constants.SUBPAGES.RESEARCH}" data-key="enabled" class="option" />
           </label></div>
 
           <div class="mb-2"><label>Dangerous fights should require enough army to win before researching:
-            <input type="checkbox" data-page="${CONSTANTS.PAGES.RESEARCH}" data-subpage="${CONSTANTS.SUBPAGES.RESEARCH}"
+            <input type="checkbox" data-page="${constants.PAGES.RESEARCH}" data-subpage="${constants.SUBPAGES.RESEARCH}"
               data-key="options" data-subkey="dangerousFights" class="option" />
           </label></div>
 
@@ -35561,8 +33956,8 @@ const taVersion = "4.8.1";
               ${tech.filter(technology => !technology.confirm && !unsafeResearch.includes(technology.id)).map(technology => {
     return `<div class="flex flex-col mb-2"><label><span class="font-bold">${translate(technology.id, 'tec_')}</span><br />
                   Prio: ${generatePrioritySelect({
-      page: CONSTANTS.PAGES.RESEARCH,
-      subpage: CONSTANTS.SUBPAGES.RESEARCH,
+      page: constants.PAGES.RESEARCH,
+      subpage: constants.SUBPAGES.RESEARCH,
       key: 'options',
       subkey: technology.id
     })}</label></div>`;
@@ -35576,8 +33971,8 @@ const taVersion = "4.8.1";
               ${tech.filter(technology => technology.confirm || unsafeResearch.includes(technology.id)).map(technology => {
     return `<div class="flex flex-col mb-2"><label><span class="font-bold">${translate(technology.id, 'tec_')}</span><br />
                   Prio: ${generatePrioritySelect({
-      page: CONSTANTS.PAGES.RESEARCH,
-      subpage: CONSTANTS.SUBPAGES.RESEARCH,
+      page: constants.PAGES.RESEARCH,
+      subpage: constants.SUBPAGES.RESEARCH,
       key: 'options',
       subkey: technology.id
     })}</label></div>`;
@@ -35588,41 +33983,41 @@ const taVersion = "4.8.1";
       </div>
 
       <div class="taTab">
-        <input type="radio" name="topLevelOptions" id="topLevelOptions-${CONSTANTS.PAGES.MARKETPLACE}" class="taTab-switch">
-        <label for="topLevelOptions-${CONSTANTS.PAGES.MARKETPLACE}" class="taTab-label">${CONSTANTS.PAGES.MARKETPLACE}</label>
+        <input type="radio" name="topLevelOptions" id="topLevelOptions-${constants.PAGES.MARKETPLACE}" class="taTab-switch">
+        <label for="topLevelOptions-${constants.PAGES.MARKETPLACE}" class="taTab-label">${constants.PAGES.MARKETPLACE}</label>
         <div class="taTab-content">
 
         <div class="mb-2"><label>Enabled:
-        <input type="checkbox" data-page="${CONSTANTS.PAGES.MARKETPLACE}" data-key="enabled" class="option" />
+        <input type="checkbox" data-page="${constants.PAGES.MARKETPLACE}" data-key="enabled" class="option" />
         </label></div>
         <div class="grid gap-3 grid-cols-fill-240 min-w-full px-12 xl:px-0 mb-2">
           ${['cow', 'horse', 'food', 'copper', 'wood', 'stone', 'iron', 'tools'].map(res => {
     return `<div class="flex flex-col mb-2"><label>
-                <input type="checkbox" data-page="${CONSTANTS.PAGES.MARKETPLACE}" data-key="options" data-subkey="resource_${res}" class="option" />
+                <input type="checkbox" data-page="${constants.PAGES.MARKETPLACE}" data-key="options" data-subkey="resource_${res}" class="option" />
               Sell ${translate(res, 'res_')}</label></div>`;
   }).join('')}
         </div>
         <div>Don't sell if max gold can be reached in
           <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200" value="60"
-          data-page="${CONSTANTS.PAGES.MARKETPLACE}" data-key="options" data-subkey="timeToWaitUntilFullGold" /> seconds</div>
+          data-page="${constants.PAGES.MARKETPLACE}" data-key="options" data-subkey="timeToWaitUntilFullGold" /> seconds</div>
         <div>Sell the same resource at most every
           <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200" value="90"
-          data-page="${CONSTANTS.PAGES.MARKETPLACE}" data-key="options" data-subkey="secondsBetweenSells" /> seconds</div>
+          data-page="${constants.PAGES.MARKETPLACE}" data-key="options" data-subkey="secondsBetweenSells" /> seconds</div>
         <div>Sell the resource if it can be refilled in at most
           <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200" value="90"
-          data-page="${CONSTANTS.PAGES.MARKETPLACE}" data-key="options" data-subkey="timeToFillResource" /> seconds</div>
+          data-page="${constants.PAGES.MARKETPLACE}" data-key="options" data-subkey="timeToFillResource" /> seconds</div>
 
         </div>
       </div>
 
       <div class="taTab">
-        <input type="radio" name="topLevelOptions" id="topLevelOptions-${CONSTANTS.PAGES.POPULATION}" class="taTab-switch">
-        <label for="topLevelOptions-${CONSTANTS.PAGES.POPULATION}" class="taTab-label">${CONSTANTS.PAGES.POPULATION}</label>
+        <input type="radio" name="topLevelOptions" id="topLevelOptions-${constants.PAGES.POPULATION}" class="taTab-switch">
+        <label for="topLevelOptions-${constants.PAGES.POPULATION}" class="taTab-label">${constants.PAGES.POPULATION}</label>
         <div class="taTab-content">
 
           <p class="mb-2">Max values: -1 -> hire unlimited; 0 -> do not hire;</p>
           <div class="mb-2"><label>Enabled:
-            <input type="checkbox" data-page="${CONSTANTS.PAGES.POPULATION}" data-key="enabled" class="option" />
+            <input type="checkbox" data-page="${constants.PAGES.POPULATION}" data-key="enabled" class="option" />
           </label></div>
 
           <div class="mb-2">
@@ -35636,11 +34031,11 @@ const taVersion = "4.8.1";
               ${jobs.filter(job => job.gen).map(job => {
     return `<div class="flex flex-col mb-2"><label><span class="font-bold">${translate(job.id, 'pop_')}</span><br />
                   Max:
-                    <input type="number" data-page="${CONSTANTS.PAGES.POPULATION}" data-key="options" data-subkey="${job.id}"
+                    <input type="number" data-page="${constants.PAGES.POPULATION}" data-key="options" data-subkey="${job.id}"
                     class="option text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
                     value="0" min="-1" max="999" step="1" /><br />
                   Prio: ${generatePrioritySelect({
-      page: CONSTANTS.PAGES.POPULATION,
+      page: constants.PAGES.POPULATION,
       key: 'options',
       subkey: `prio_${job.id}`
     })}</label></div>`;
@@ -35650,42 +34045,42 @@ const taVersion = "4.8.1";
 
           <div class="mb-2"><label>Minimum Food production to aim for:
             <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
-            data-page="${CONSTANTS.PAGES.POPULATION}" data-key="options" data-subkey="minimumFood" value="1" min="0" max="999999" step="1" /></label></div>
+            data-page="${constants.PAGES.POPULATION}" data-key="options" data-subkey="minimumFood" value="1" min="0" max="999999" step="1" /></label></div>
 
           <div class="mb-2"><label>Ratio for unsafe jobs (speed of resource production to usage):
             <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
-            data-page="${CONSTANTS.PAGES.POPULATION}" data-key="options" data-subkey="unsafeJobRatio"
+            data-page="${constants.PAGES.POPULATION}" data-key="options" data-subkey="unsafeJobRatio"
             value="2" min="0" max="999999" step="0.01" /></label></div>
 
 
           <div class="mb-2"><label>Rebalance population every:
             <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
-              data-page="${CONSTANTS.PAGES.POPULATION}" data-key="options" data-subkey="populationRebalanceTime" value="0" min="0" max="999999" step="1" />
+              data-page="${constants.PAGES.POPULATION}" data-key="options" data-subkey="populationRebalanceTime" value="0" min="0" max="999999" step="1" />
             minutes (0 to disable)</label></div>
 
         </div>
       </div>
 
       <div class="taTab">
-        <input type="radio" name="topLevelOptions" id="topLevelOptions-${CONSTANTS.PAGES.ARMY}" class="taTab-switch">
-        <label for="topLevelOptions-${CONSTANTS.PAGES.ARMY}" class="taTab-label">${CONSTANTS.PAGES.ARMY}</label>
+        <input type="radio" name="topLevelOptions" id="topLevelOptions-${constants.PAGES.ARMY}" class="taTab-switch">
+        <label for="topLevelOptions-${constants.PAGES.ARMY}" class="taTab-label">${constants.PAGES.ARMY}</label>
         <div class="taTab-content">
 
         <div class="mb-2"><label>Enabled:
-        <input type="checkbox" data-page="${CONSTANTS.PAGES.ARMY}" data-key="enabled" class="option" />
+        <input type="checkbox" data-page="${constants.PAGES.ARMY}" data-key="enabled" class="option" />
         </div>
 
         <div class="taTabs">
           <div class="taTab">
-            <input type="radio" name="${CONSTANTS.PAGES.ARMY}PageOptions"
-              id="${CONSTANTS.PAGES.ARMY}PageOptions-${CONSTANTS.SUBPAGES.ARMY}"
+            <input type="radio" name="${constants.PAGES.ARMY}PageOptions"
+              id="${constants.PAGES.ARMY}PageOptions-${constants.SUBPAGES.ARMY}"
               checked class="taTab-switch">
-            <label for="${CONSTANTS.PAGES.ARMY}PageOptions-${CONSTANTS.SUBPAGES.ARMY}" class="taTab-label">${CONSTANTS.SUBPAGES.ARMY}</label>
+            <label for="${constants.PAGES.ARMY}PageOptions-${constants.SUBPAGES.ARMY}" class="taTab-label">${constants.SUBPAGES.ARMY}</label>
             <div class="taTab-content">
               <p class="mb-2">Max values: -1 -> hire unlimited; 0 -> do not hire;</p>
 
               <div class="mb-2"><label>Enabled:
-                <input type="checkbox" data-page="${CONSTANTS.PAGES.ARMY}" data-subpage="${CONSTANTS.SUBPAGES.ARMY}" data-key="enabled" class="option" />
+                <input type="checkbox" data-page="${constants.PAGES.ARMY}" data-subpage="${constants.SUBPAGES.ARMY}" data-key="enabled" class="option" />
               </label></div>
 
               ${userUnitsCategory.map((cat, index) => `
@@ -35695,12 +34090,12 @@ const taVersion = "4.8.1";
                     ${userUnits.filter(unit => unit.category === index).map(unit => {
     return `<div class="flex flex-col mb-2"><label><span class="font-bold">${translate(unit.id, 'uni_')}</span><br/>
                         Max:
-                          <input type="number" data-page="${CONSTANTS.PAGES.ARMY}" data-subpage="${CONSTANTS.SUBPAGES.ARMY}" data-key="options" data-subkey="${unit.id}"
+                          <input type="number" data-page="${constants.PAGES.ARMY}" data-subpage="${constants.SUBPAGES.ARMY}" data-key="options" data-subkey="${unit.id}"
                           class="option text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
                           value="0" min="-1" max="${unit.cap ? unit.cap : 999}" step="1" /><br />
                         Prio: ${generatePrioritySelect({
-      page: CONSTANTS.PAGES.ARMY,
-      subpage: CONSTANTS.SUBPAGES.ARMY,
+      page: constants.PAGES.ARMY,
+      subpage: constants.SUBPAGES.ARMY,
       key: 'options',
       subkey: `prio_${unit.id}`
     })}</label></div>`;
@@ -35712,50 +34107,50 @@ const taVersion = "4.8.1";
           </div>
 
           <div class="taTab">
-            <input type="radio" name="${CONSTANTS.PAGES.ARMY}PageOptions"
-              id="${CONSTANTS.PAGES.ARMY}PageOptions-${CONSTANTS.SUBPAGES.EXPLORE}"
+            <input type="radio" name="${constants.PAGES.ARMY}PageOptions"
+              id="${constants.PAGES.ARMY}PageOptions-${constants.SUBPAGES.EXPLORE}"
               class="taTab-switch">
-            <label for="${CONSTANTS.PAGES.ARMY}PageOptions-${CONSTANTS.SUBPAGES.EXPLORE}" class="taTab-label">${CONSTANTS.SUBPAGES.EXPLORE}</label>
+            <label for="${constants.PAGES.ARMY}PageOptions-${constants.SUBPAGES.EXPLORE}" class="taTab-label">${constants.SUBPAGES.EXPLORE}</label>
             <div class="taTab-content">
               <div class="mb-2"><label>Enabled:
-                <input type="checkbox" data-page="${CONSTANTS.PAGES.ARMY}" data-subpage="${CONSTANTS.SUBPAGES.EXPLORE}" data-key="enabled" class="option" />
+                <input type="checkbox" data-page="${constants.PAGES.ARMY}" data-subpage="${constants.SUBPAGES.EXPLORE}" data-key="enabled" class="option" />
               </label></div>
 
               <div class="mb-2"><label>Scouts to send:<br />
               Min: <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
-              data-page="${CONSTANTS.PAGES.ARMY}" data-subpage="${CONSTANTS.SUBPAGES.EXPLORE}"
+              data-page="${constants.PAGES.ARMY}" data-subpage="${constants.SUBPAGES.EXPLORE}"
               data-key="options" data-subkey="scoutsMin" value="0" min="0" max="999999" step="1" /><br />
               Max: <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
-              data-page="${CONSTANTS.PAGES.ARMY}" data-subpage="${CONSTANTS.SUBPAGES.EXPLORE}"
+              data-page="${constants.PAGES.ARMY}" data-subpage="${constants.SUBPAGES.EXPLORE}"
               data-key="options" data-subkey="scoutsMax" value="0" min="0" max="999999" step="1" /></label></div>
 
               <div class="mb-2"><label>Explorers to send:<br />
               Min: <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
-              data-page="${CONSTANTS.PAGES.ARMY}" data-subpage="${CONSTANTS.SUBPAGES.EXPLORE}"
+              data-page="${constants.PAGES.ARMY}" data-subpage="${constants.SUBPAGES.EXPLORE}"
               data-key="options" data-subkey="explorersMin" value="0" min="0" max="999999" step="1" /><br />
               Max: <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
-              data-page="${CONSTANTS.PAGES.ARMY}" data-subpage="${CONSTANTS.SUBPAGES.EXPLORE}"
+              data-page="${constants.PAGES.ARMY}" data-subpage="${constants.SUBPAGES.EXPLORE}"
               data-key="options" data-subkey="explorersMax" value="0" min="0" max="999999" step="1" /></label></div>
 
 
               <div class="mb-2"><label>Familiars to send:<br />
               Min: <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
-              data-page="${CONSTANTS.PAGES.ARMY}" data-subpage="${CONSTANTS.SUBPAGES.EXPLORE}"
+              data-page="${constants.PAGES.ARMY}" data-subpage="${constants.SUBPAGES.EXPLORE}"
               data-key="options" data-subkey="familiarsMin" value="0" min="0" max="999999" step="1" /><br />
               Max: <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
-              data-page="${CONSTANTS.PAGES.ARMY}" data-subpage="${CONSTANTS.SUBPAGES.EXPLORE}"
+              data-page="${constants.PAGES.ARMY}" data-subpage="${constants.SUBPAGES.EXPLORE}"
               data-key="options" data-subkey="familiarsMax" value="0" min="0" max="999999" step="1" /></label></div>
             </div>
           </div>
 
           <div class="taTab">
-            <input type="radio" name="${CONSTANTS.PAGES.ARMY}PageOptions"
-              id="${CONSTANTS.PAGES.ARMY}PageOptions-${CONSTANTS.SUBPAGES.ATTACK}"
+            <input type="radio" name="${constants.PAGES.ARMY}PageOptions"
+              id="${constants.PAGES.ARMY}PageOptions-${constants.SUBPAGES.ATTACK}"
               class="taTab-switch">
-            <label for="${CONSTANTS.PAGES.ARMY}PageOptions-${CONSTANTS.SUBPAGES.ATTACK}" class="taTab-label">${CONSTANTS.SUBPAGES.ATTACK}</label>
+            <label for="${constants.PAGES.ARMY}PageOptions-${constants.SUBPAGES.ATTACK}" class="taTab-label">${constants.SUBPAGES.ATTACK}</label>
             <div class="taTab-content">
               <div class="mb-2"><label>Enabled:
-                <input type="checkbox" data-page="${CONSTANTS.PAGES.ARMY}" data-subpage="${CONSTANTS.SUBPAGES.ATTACK}" data-key="enabled" class="option" />
+                <input type="checkbox" data-page="${constants.PAGES.ARMY}" data-subpage="${constants.SUBPAGES.ATTACK}" data-key="enabled" class="option" />
               </label></div>
 
               <p class="mb-2">Check all fights to take</p>
@@ -35772,7 +34167,7 @@ const taVersion = "4.8.1";
                   <div class="grid gap-3 grid-cols-fill-240 min-w-full px-12 xl:px-0 mb-2">
                     ${fights.filter(fight => fight.level === level).map(fight => {
     return `<div class="flex flex-col mb-2"><label>
-                        <input type="checkbox"  data-page="${CONSTANTS.PAGES.ARMY}" data-subpage="${CONSTANTS.SUBPAGES.ATTACK}"
+                        <input type="checkbox"  data-page="${constants.PAGES.ARMY}" data-subpage="${constants.SUBPAGES.ATTACK}"
                           data-key="options" data-subkey="${fight.key}" class="option" />
                         <span class="font-bold">${fight.id}</span></label></div>`;
   }).join('')}
@@ -35788,21 +34183,21 @@ const taVersion = "4.8.1";
       </div>
 
       <div class="taTab">
-        <input type="radio" name="topLevelOptions" id="topLevelOptions-${CONSTANTS.PAGES.MAGIC}" class="taTab-switch">
-        <label for="topLevelOptions-${CONSTANTS.PAGES.MAGIC}" class="taTab-label">${CONSTANTS.PAGES.MAGIC}</label>
+        <input type="radio" name="topLevelOptions" id="topLevelOptions-${constants.PAGES.MAGIC}" class="taTab-switch">
+        <label for="topLevelOptions-${constants.PAGES.MAGIC}" class="taTab-label">${constants.PAGES.MAGIC}</label>
         <div class="taTab-content">
 
           <div class="mb-2"><label>Enabled:
-            <input type="checkbox" data-page="${CONSTANTS.PAGES.MAGIC}" data-key="enabled" class="option" />
+            <input type="checkbox" data-page="${constants.PAGES.MAGIC}" data-key="enabled" class="option" />
           </div>
 
           <div class="taTabs">
             <div class="taTab">
-              <input type="radio" name="${CONSTANTS.PAGES.MAGIC}PageOptions" id="${CONSTANTS.PAGES.MAGIC}PageOptions-${CONSTANTS.SUBPAGES.PRAYERS}" checked class="taTab-switch">
-              <label for="${CONSTANTS.PAGES.MAGIC}PageOptions-${CONSTANTS.SUBPAGES.PRAYERS}" class="taTab-label">${CONSTANTS.SUBPAGES.PRAYERS}</label>
+              <input type="radio" name="${constants.PAGES.MAGIC}PageOptions" id="${constants.PAGES.MAGIC}PageOptions-${constants.SUBPAGES.PRAYERS}" checked class="taTab-switch">
+              <label for="${constants.PAGES.MAGIC}PageOptions-${constants.SUBPAGES.PRAYERS}" class="taTab-label">${constants.SUBPAGES.PRAYERS}</label>
               <div class="taTab-content">
                 <div class="mb-2"><label>Enabled:
-                  <input type="checkbox" data-page="${CONSTANTS.PAGES.MAGIC}" data-subpage="${CONSTANTS.SUBPAGES.PRAYERS}" data-key="enabled" class="option" />
+                  <input type="checkbox" data-page="${constants.PAGES.MAGIC}" data-subpage="${constants.SUBPAGES.PRAYERS}" data-key="enabled" class="option" />
                 </label></div>
 
                 <div class="mb-2">
@@ -35815,8 +34210,8 @@ const taVersion = "4.8.1";
                     ${spells.filter(prayer => prayer.type === 'prayer').map(prayer => {
     return `<div class="flex flex-col mb-2"><label><span class="font-bold">${translate(prayer.id)}</span><br/>
                         Prio: ${generatePrioritySelect({
-      page: CONSTANTS.PAGES.MAGIC,
-      subpage: CONSTANTS.SUBPAGES.PRAYERS,
+      page: constants.PAGES.MAGIC,
+      subpage: constants.SUBPAGES.PRAYERS,
       key: 'options',
       subkey: prayer.id
     })}</label></div>`;
@@ -35827,17 +34222,17 @@ const taVersion = "4.8.1";
             </div>
 
             <div class="taTab">
-              <input type="radio" name="${CONSTANTS.PAGES.MAGIC}PageOptions"
-              id="${CONSTANTS.PAGES.MAGIC}PageOptions-${CONSTANTS.SUBPAGES.SPELLS}"  class="taTab-switch">
-              <label for="${CONSTANTS.PAGES.MAGIC}PageOptions-${CONSTANTS.SUBPAGES.SPELLS}" class="taTab-label">${CONSTANTS.SUBPAGES.SPELLS}</label>
+              <input type="radio" name="${constants.PAGES.MAGIC}PageOptions"
+              id="${constants.PAGES.MAGIC}PageOptions-${constants.SUBPAGES.SPELLS}"  class="taTab-switch">
+              <label for="${constants.PAGES.MAGIC}PageOptions-${constants.SUBPAGES.SPELLS}" class="taTab-label">${constants.SUBPAGES.SPELLS}</label>
               <div class="taTab-content">
                 <div class="mb-2"><label>Enabled:
-                  <input type="checkbox" data-page="${CONSTANTS.PAGES.MAGIC}" data-subpage="${CONSTANTS.SUBPAGES.SPELLS}" data-key="enabled" class="option" />
+                  <input type="checkbox" data-page="${constants.PAGES.MAGIC}" data-subpage="${constants.SUBPAGES.SPELLS}" data-key="enabled" class="option" />
                 </label></div>
 
                 <div class="mb-2"><label>Minimum Mana production to leave:
                 <input type="number" class="option w-min text-center lg:text-sm text-gray-700 bg-gray-100 dark:text-mydark-50 dark:bg-mydark-200 border-y border-gray-400 dark:border-mydark-200"
-                data-page="${CONSTANTS.PAGES.MAGIC}" data-subpage="${CONSTANTS.SUBPAGES.SPELLS}"
+                data-page="${constants.PAGES.MAGIC}" data-subpage="${constants.SUBPAGES.SPELLS}"
                 data-key="options" data-subkey="minimumMana" value="0" min="0" max="999999" step="1" /></label></div>
 
                 <div class="mb-2">
@@ -35852,7 +34247,7 @@ const taVersion = "4.8.1";
                   <div class="grid gap-3 grid-cols-fill-240 min-w-full px-12 xl:px-0 mb-2">
                     ${spells.filter(spell => spell.type === 'spell').filter(spell => spell.gen && !spell.gen.find(gen => gen.type === 'modifier' && gen.type_id === 'army')).map(spell => {
     return `<div class="flex flex-col mb-2"><label>
-                        <input type="checkbox" data-page="${CONSTANTS.PAGES.MAGIC}" data-subpage="${CONSTANTS.SUBPAGES.SPELLS}"
+                        <input type="checkbox" data-page="${constants.PAGES.MAGIC}" data-subpage="${constants.SUBPAGES.SPELLS}"
                           data-key="options" data-subkey="${spell.id}" class="option" />
                         <span class="font-bold">${translate(spell.id)}</span></label></div>`;
   }).join('')}
@@ -35864,7 +34259,7 @@ const taVersion = "4.8.1";
                   <div class="grid gap-3 grid-cols-fill-240 min-w-full px-12 xl:px-0 mb-2">
                     ${spells.filter(spell => spell.type === 'spell').filter(spell => spell.gen && spell.gen.find(gen => gen.type === 'modifier' && gen.type_id === 'army')).map(spell => {
     return `<div class="flex flex-col mb-2"><label>
-                        <input type="checkbox" data-page="${CONSTANTS.PAGES.MAGIC}" data-subpage="${CONSTANTS.SUBPAGES.SPELLS}"
+                        <input type="checkbox" data-page="${constants.PAGES.MAGIC}" data-subpage="${constants.SUBPAGES.SPELLS}"
                           data-key="options" data-subkey="${spell.id}" class="option" />
                         <span class="font-bold">${translate(spell.id)}</span></label></div>`;
   }).join('')}
@@ -35878,11 +34273,11 @@ const taVersion = "4.8.1";
       </div>
 
       <div class="taTab">
-        <input type="radio" name="topLevelOptions" id="topLevelOptions-${CONSTANTS.PAGES.DIPLOMACY}" class="taTab-switch">
-        <label for="topLevelOptions-${CONSTANTS.PAGES.DIPLOMACY}" class="taTab-label">${CONSTANTS.PAGES.DIPLOMACY}</label>
+        <input type="radio" name="topLevelOptions" id="topLevelOptions-${constants.PAGES.DIPLOMACY}" class="taTab-switch">
+        <label for="topLevelOptions-${constants.PAGES.DIPLOMACY}" class="taTab-label">${constants.PAGES.DIPLOMACY}</label>
         <div class="taTab-content">
           <div class="mb-2"><label>Enabled:
-            <input type="checkbox" data-page="${CONSTANTS.PAGES.DIPLOMACY}" data-key="enabled" class="option" />
+            <input type="checkbox" data-page="${constants.PAGES.DIPLOMACY}" data-key="enabled" class="option" />
           </div>
 
           <div class="flex flex-wrap min-w-full mt-3 p-3 shadow rounded-lg ring-1 ring-gray-300 dark:ring-mydark-200 bg-gray-100 dark:bg-mydark-600 spellsArmy">
@@ -35890,23 +34285,23 @@ const taVersion = "4.8.1";
               ${factions.filter(faction => faction.gen).filter(faction => faction.relationship).map(faction => {
     const options = [{
       key: 'Disabled',
-      value: CONSTANTS.DIPLOMACY.DISABLED
+      value: constants.DIPLOMACY.DISABLED
     }, {
       key: 'Go to war',
-      value: CONSTANTS.DIPLOMACY.GO_TO_WAR
+      value: constants.DIPLOMACY.GO_TO_WAR
     }, {
       key: 'Just trade',
-      value: CONSTANTS.DIPLOMACY.JUST_TRADE
+      value: constants.DIPLOMACY.JUST_TRADE
     }, {
       key: 'Trade, then ally',
-      value: CONSTANTS.DIPLOMACY.TRADE_AND_ALLY
+      value: constants.DIPLOMACY.TRADE_AND_ALLY
     }, {
       key: 'Ally without trading',
-      value: CONSTANTS.DIPLOMACY.ONLY_ALLY
+      value: constants.DIPLOMACY.ONLY_ALLY
     }];
     return `<div class="flex flex-col mb-2"><label><span class="font-bold">${translate(faction.id)}</span><br />
                   ${generatePrioritySelect({
-      page: CONSTANTS.PAGES.DIPLOMACY,
+      page: constants.PAGES.DIPLOMACY,
       key: 'options',
       subkey: `${faction.id}`
     }, options)}
@@ -36458,6 +34853,262 @@ const taVersion = "4.8.1";
     updateStats
   };
 
+  const getCurrentResources = () => {
+    // Final resources objects to populate with current data
+    let resources = {};
+
+    // Loop through all the divs that contain resource information
+    const resourcesDivs = [...document.querySelectorAll('#root div > div > div > table > tbody > tr > td:nth-child(1) > span')];
+    resourcesDivs.map(resourceDiv => {
+      // Grab the name of the resource and intialize its data
+      let rawKey = reactUtil.getNearestKey(resourceDiv, 6);
+      const resourceName = rawKey.split("_")[1];
+      let resource = {
+        name: resourceName,
+        current: 0,
+        max: 0,
+        speed: 0,
+        ttf: null,
+        ttz: null
+      };
+
+      // Grab all the resources values based on the resourceDiv
+      const values = resourceDiv.parentNode.parentNode.childNodes[1].textContent.split('/').map(x => numberParser.parse(x.replace(/[^0-9KM\-,\.]/g, '').trim()));
+
+      // Simple Values
+      resource.current = values[0];
+      resource.max = values[1];
+
+      // Current rate for the resource
+      resource.speed = numberParser.parse(resourceDiv.parentNode.parentNode.childNodes[2].textContent.replace(/[^0-9KM\-,\.]/g, '').trim()) || 0;
+
+      // Calculate full and empty times if applicable for each resource
+      // ttf = time till full
+      // ttz = time till zero
+      resource.ttf = null;
+      if (resource.speed > 0 && resource.max !== resource.current) {
+        formatTime(Math.ceil((resource.max - resource.current) / resource.speed));
+      }
+      resource.ttz = null;
+      if (resource.speed < 0 && resource.current) {
+        formatTime(Math.ceil(resource.current / (resource.speed * -1)));
+      }
+
+      // Save the resource before moving onto the next one
+      resources[resourceName] = resource;
+    });
+    return resources;
+  };
+
+  const buildingNameToID = {};
+  var canBalance$1 = true;
+  const getAllBuildButtons = () => {
+    // Grab the buttons and their data before trying to do anything else
+    const buttonsDivs = selectors.getAllButtons(false);
+    let buttons = {};
+    buttonsDivs.forEach(button => {
+      let buttonText = button.textContent.replace(/[0-9]/g, '');
+      let id = buttonText.replace(" ", "_").toLowerCase();
+      if (buildingNameToID[id]) {
+        id = buildingNameToID[id];
+      }
+      let buildData = buildings.find(building => building.id === id);
+      if (!buildData) {
+        console.log(buttonText);
+        logger({
+          msgLevel: "warn",
+          msg: "tech id:" + id
+        });
+        logger({
+          msgLevel: "debug",
+          msg: "button text:" + buttonText
+        });
+      }
+      buttons[buttonText] = {
+        button,
+        build: buildData
+      };
+    });
+    return buttons;
+  };
+  const completeBuilding = async buildingName => {
+    // Switch to the navigations tab and grab all the buttons
+    await navigation.switchSubPage(constants.SUBPAGES.CITY, constants.PAGES.BUILD);
+    const buttons = getAllBuildButtons();
+
+    // Check to see if the requested button even exists. If not, log a warning and continue
+    let building = buttons[buildingName];
+    if (!building) {
+      console.log(buttons);
+      console.log(buildingName);
+      logger({
+        msgLevel: "warn",
+        msg: "unable to find building " + buildingName + ". skipping"
+      });
+      return true;
+    }
+
+    // If the button does exist, we want to see if we can purchase it
+    let resources = getCurrentResources();
+    let resourcesRequirements = {};
+    if (building.build.req) {
+      building.build.req.forEach(req => {
+        if (req.type == "resource") {
+          resourcesRequirements[req.id] = req.value;
+        }
+      });
+    }
+    let canBuild = true;
+    for (const [resourceID, value] of Object.entries(resourcesRequirements)) {
+      let deficit = resources[resourceID].current - value;
+      if (deficit < 0) {
+        canBuild = false;
+      }
+    }
+    if (canBuild) {
+      building.button.click();
+      return true;
+    } else if (canBalance$1) {
+      canBalance$1 = true;
+      return false;
+    }
+  };
+  var cityBuilding = (buildingName => {
+    return {
+      function: () => completeBuilding(buildingName),
+      log: {
+        msgLevel: "log",
+        msg: "attempting to build: " + buildingName
+      }
+    };
+  });
+
+  const researchNameToID = {
+    "monument": "monument_past",
+    "agriculture": "agricolture"
+  };
+  var canBalance = true;
+  const getAllResearchButtons = () => {
+    // Grab the buttons and their data before trying to do anything else
+    const buttonsDivs = selectors.getAllButtons(false);
+    let buttons = {};
+    buttonsDivs.forEach(button => {
+      let buttonText = button.textContent;
+      let id = buttonText.replace(" ", "_").toLowerCase();
+      if (researchNameToID[id]) {
+        id = researchNameToID[id];
+      }
+      let techData = tech.find(technology => technology.id === id);
+      if (!techData) {
+        console.log(buttonText);
+        logger({
+          msgLevel: "warn",
+          msg: "tech id:" + id
+        });
+        logger({
+          msgLevel: "debug",
+          msg: "button text:" + buttonText
+        });
+      }
+      buttons[buttonText] = {
+        button,
+        tech: techData
+      };
+    });
+    return buttons;
+  };
+  const completeResearch = async researchName => {
+    // Switch to the navigations tab and grab all the buttons
+    await navigation.switchSubPage(constants.SUBPAGES.RESEARCH, constants.PAGES.RESEARCH);
+    const buttons = getAllResearchButtons();
+
+    // Check to see if the requested button even exists. If not, log a warning and continue
+    let research = buttons[researchName];
+    if (!research) {
+      console.log(buttons);
+      console.log(researchName);
+      logger({
+        msgLevel: "warn",
+        msg: "unable to find research " + researchName + ". skipping"
+      });
+      return true;
+    }
+
+    // If the button does exist, we want to see if we can purchase it
+    let resources = getCurrentResources();
+    let resourcesRequirements = {};
+    if (research.tech.req) {
+      research.tech.req.forEach(req => {
+        if (req.type == "resource") {
+          resourcesRequirements[req.id] = req.value;
+        }
+      });
+    }
+    let canResearch = true;
+    for (const [resourceID, value] of Object.entries(resourcesRequirements)) {
+      let deficit = resources[resourceID].current - value;
+      if (deficit < 0) {
+        canResearch = false;
+      }
+    }
+    if (canResearch) {
+      research.button.click();
+      return true;
+    } else if (canBalance) {
+      canBalance = true;
+      return false;
+    }
+  };
+  var research = (researchName => {
+    return {
+      function: () => completeResearch(researchName),
+      log: {
+        msgLevel: "log",
+        msg: "attempting to research: " + researchName
+      }
+    };
+  });
+
+  var standard = {
+    index: 0,
+    lastIndex: null,
+    completed: null,
+    queueFunctions: [research("Housing"), cityBuilding("Common House"), cityBuilding("Common House"), cityBuilding("Common House"), research("Monument"), cityBuilding("Monument"), research("Agriculture"), cityBuilding("Farm"), cityBuilding("Farm")
+
+    // TODO Allocate resources
+    ]
+  };
+
+  var queues = {
+    standard
+  };
+
+  async function automate (queueName) {
+    let queue = queues[queueName];
+    if (queue.completed) {
+      return 1000;
+    }
+    let step = queue.queueFunctions[queue.index];
+    if (!step) {
+      logger({
+        msgLevel: "info",
+        msg: "completed " + queueName + "!"
+      });
+      queue.completed = true;
+      return 1000;
+    }
+    if (queue.lastIndex !== queue.index) {
+      logger(step.log);
+      queue.lastIndex = queue.index;
+    }
+    if ((await step.function()) === true) {
+      queue.index = queue.index + 1;
+      return 5000; // Time it takes for an action to process
+    }
+
+    return 50;
+  }
+
   let mainLoopRunning = false;
   let hideFullPageOverlayInterval;
   const switchScriptState = () => {
@@ -36480,47 +35131,8 @@ const taVersion = "4.8.1";
     }
     mainLoopRunning = true;
     while (!state.scriptPaused) {
-      tasks.cosmetics.removeToasts();
-      await tasks.autoPrestige();
-      await tasks.autoNGPlus();
-      await tasks.autoAncestor();
-      const pagesToCheck = [];
-      Object.keys(state.options.pages).forEach(page => {
-        if (state.options.pages[page].enabled || page === CONSTANTS.PAGES.RESEARCH) {
-          if (pages[page]) {
-            pagesToCheck.push(page);
-          }
-          if (state.options.pages[page].subpages) {
-            Object.keys(state.options.pages[page].subpages).forEach(subpage => {
-              if (state.options.pages[page].subpages[subpage].enabled) {
-                if (pages[page + subpage]) {
-                  pagesToCheck.push(page + subpage);
-                }
-              }
-            });
-          }
-        }
-      });
-      pagesToCheck.sort((a, b) => {
-        return state.lastVisited[a] - state.lastVisited[b];
-      });
-      while (!state.scriptPaused && pagesToCheck.length) {
-        const pageToCheck = pagesToCheck.shift();
-        if (pages[pageToCheck] && pages[pageToCheck].enabled()) {
-          const page = pages[pageToCheck];
-          if (page) {
-            logger({
-              msgLevel: 'debug',
-              msg: `Executing page ${page.page} ${page.subpage ? page.subpage : ''} action`
-            });
-            state.lastVisited[pageToCheck] = new Date().getTime();
-            localStorage.set('lastVisited', state.lastVisited);
-            await page.action();
-            await sleep(1000);
-          }
-        }
-      }
-      await sleep(1000);
+      let waitFor = await automate("standard");
+      await sleep(waitFor);
     }
     mainLoopRunning = false;
   };
@@ -36551,7 +35163,7 @@ const taVersion = "4.8.1";
       await sleep(2000);
       mainLoop();
       await sleep(1000);
-      tasks.autoClicker();
+      // tasks.autoClicker()
     } else {
       if (!hideFullPageOverlayInterval) {
         clearInterval(hideFullPageOverlayInterval);
