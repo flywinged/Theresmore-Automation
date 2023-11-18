@@ -1,0 +1,75 @@
+{
+    "common_house": {
+        "requires": [
+            {
+                "type": "resource",
+                "id": "wood",
+                "value": 15,
+                "multiplier": 1.3
+            },
+            {
+                "type": "resource",
+                "id": "stone",
+                "value": 10,
+                "multiplier": 1.3
+            }
+        ],
+        "generates": [
+            {
+                "type": "resource",
+                "id": "food",
+                "value": -1
+            },
+            {
+                "type": "resource",
+                "id": "gold",
+                "value": 0.2
+            },
+            {
+                "type": "resource",
+                "id": "research",
+                "value": 0.3
+            },
+            {
+                "type": "job",
+                "id": "unemployed",
+                "value": 1
+            }
+        ]
+    },
+    "farm" : {
+        "requires": [
+            {
+                "type": "resource",
+                "id": "gold",
+                "value": 10,
+                "multiplier": 1.4
+            },
+            {
+                "type": "resource",
+                "id": "wood",
+                "value": 24,
+                "multiplier": 1.4
+            }
+        ],
+        "generates": [
+            {
+                "type": "job",
+                "id": "farmer",
+                "value": 1
+            },
+            {
+                "type": "modifier",
+                "modifierType": "job_resource",
+                "jobId": "farmer",
+                "resourceId": "food",
+                "value": 0.01
+            },
+            {
+                "type": "cap",
+                "id": "food",
+                "value": 240
+            }
+        ]
+    }
+}

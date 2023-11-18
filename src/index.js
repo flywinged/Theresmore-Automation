@@ -2,6 +2,8 @@ import { sleep, logger, localStorage, state, runMigrations, CONSTANTS } from './
 import pages from './pages'
 import tasks from './tasks'
 import automate from './automate'
+import { initializeBuildingState } from './automate/state/building'
+import { initializeResearchState } from './automate/state/research'
 
 let mainLoopRunning = false
 let hideFullPageOverlayInterval
@@ -55,6 +57,10 @@ const start = async () => {
     
     if (!state.scriptPaused) {
         logger({ msgLevel: 'log', msg: 'Starting automation' })
+
+        // Initialize the current state of affairs
+        await initializeBuildingState()
+        await initializeResearchState()
         
         if (!hideFullPageOverlayInterval) {
             clearInterval(hideFullPageOverlayInterval)
@@ -66,7 +72,7 @@ const start = async () => {
         mainLoop()
         
         await sleep(1000)
-        // tasks.autoClicker() // Enable this if you want autoclicker
+        tasks.autoClicker() // Enable this if you want autoclicker
     } else {
         if (!hideFullPageOverlayInterval) {
             clearInterval(hideFullPageOverlayInterval)

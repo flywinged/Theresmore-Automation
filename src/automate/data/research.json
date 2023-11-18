@@ -1,0 +1,25 @@
+{
+    "housing" : {
+        "researched": false
+    },
+    "agriculture" : {
+        "researched": false,
+        "requires": [
+            {
+                "type": "resource",
+                "id": "research",
+                "value": 10
+            }
+        ]
+    },
+    "stone_masonry" : {
+        "researched": false,
+        "requires": [
+            {
+                "type": "resource",
+                "id": "research",
+                "value": 20
+            }
+        ]
+      }
+}

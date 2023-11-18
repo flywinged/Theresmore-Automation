@@ -1,7 +1,7 @@
 import { formatTime, numberParser, reactUtil } from "../../utils"
 
 
-export const getCurrentResources = () => {
+export default () => {
     
     // Final resources objects to populate with current data
     let resources = {}
@@ -43,8 +43,4 @@ export const getCurrentResources = () => {
     
     return resources
     
-}
-
-export const balanceResources = deficit => {
-
 }

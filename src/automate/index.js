@@ -12,7 +12,7 @@ export default async function(queueName) {
     let step = queue.queueFunctions[queue.index]
 
     if (!step) {
-        logger({msgLevel: "info", msg: "completed " + queueName + "!"})
+        logger({msgLevel: "log", msg: "completed " + queueName + "!"})
         queue.completed = true
         return 1000
     }
@@ -22,11 +22,10 @@ export default async function(queueName) {
         queue.lastIndex = queue.index
     }
 
-    if (await step.function() === true) {
+    let response = await step.function()
+    if (response.complete) {
         queue.index = queue.index + 1
-        return 5000 // Time it takes for an action to process
     }
-
-    return 50
+    return response.delay
 
 }

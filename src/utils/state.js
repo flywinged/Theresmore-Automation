@@ -19,7 +19,7 @@ export const getDefaultOptions = () => {
     },
     cosmetics: {
       hideFullPageOverlay: {
-        enabled: false,
+        enabled: true, // This should be enabled by default
       },
       toasts: {
         enabled: false,
@@ -41,6 +41,10 @@ export const getDefaultOptions = () => {
 
   Object.keys(CONSTANTS.SUBPAGES).every((key) => {
     const parent = CONSTANTS.PAGES[CONSTANTS.SUBPAGE_MAPPING[key]]
+
+    if (!options.pages[parent]) {
+      return
+    }
 
     options.pages[parent].subpages[CONSTANTS.SUBPAGES[key]] = {
       enabled: false,

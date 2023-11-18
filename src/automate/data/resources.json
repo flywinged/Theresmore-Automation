@@ -1,0 +1,25 @@
+{
+    "research" : {
+        "cap": 500,
+        "bonus": 1.0
+    },
+   "gold" : {
+        "cap": 600,
+        "bonus": 1.0
+    },
+    "food" : {
+        "manual": true,
+        "cap": 300,
+        "bonus": 1.0
+    },
+    "wood" : {
+        "manual": true,
+        "cap": 300,
+        "bonus": 1.0
+    },
+    "stone" : {
+        "manual": true,
+        "cap": 300,
+        "bonus": 1.0
+    }
+}

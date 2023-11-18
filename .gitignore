@@ -3,3 +3,5 @@ dist/dev.user.js
 .vscode/
 yarn.lock
 todo.md
+
+dist/*
