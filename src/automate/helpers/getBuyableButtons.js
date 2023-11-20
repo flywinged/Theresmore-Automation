@@ -25,13 +25,13 @@ export default (
         // Warn if unable to find it
         let buttonData = referenceData[id]
         if (!buttonData) {
+            logger({msgLevel: "error", msg: "could not find data for button " + buttonText})
             return
         }
 
         buttons[id] = {
             div,
-            count,
-            data: buttonData
+            count
         }
     })
     

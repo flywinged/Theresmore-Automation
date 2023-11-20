@@ -1,15 +1,17 @@
 import { logger, navigation } from "../../utils"
 import constants from "../../utils/constants"
-import { buildings, jobs } from "../data"
-import getButtons from "../helpers/getButtons"
+import { buildings } from "../data"
+import getBuyableButtons from "../helpers/getBuyableButtons"
 import { updateStateFromGenerates } from "./generates"
 
 // Get the current state of all building
-export const initializeBuildingState = async () => {
+export const getBuildingState = async (initialize) => {
 
-    for (const [buildingId, buildingData] of Object.entries(buildings)) {
+    for (const [_, buildingData] of Object.entries(buildings)) {
         buildingData.count = 0
-        if (buildingData.generates) {
+        buildingData.div = null
+
+        if (initialize && buildingData.generates) {
             buildingData.generates.forEach(gen => {
                 if (gen.type == "resource") {
                     gen.multiplier = 1
@@ -21,15 +23,22 @@ export const initializeBuildingState = async () => {
     // Switch to the completed page to determine what has already been buildinged
     await navigation.switchSubPage(constants.SUBPAGES.CITY, constants.PAGES.BUILD)
 
-    let buttons = getButtons(buildings)
+    let buttons = getBuyableButtons(buildings)
     for (const [buildingId, buildingData] of Object.entries(buttons)) {
         let foundBuilding = buildings[buildingId]
         if (foundBuilding) {
+
+            if (initialize) {
+                updateStateFromGenerates(foundBuilding.generates, buildingData.count)
+            }
+
             foundBuilding.count = buildingData.count
+            foundBuilding.div = buildingData.div
+
         }
     }
 
-    console.log("initial building state", buildings)
+    console.log({buildings})
     return buildings
 
 }
@@ -42,13 +51,10 @@ export const makeBuilding = (buildingId) => {
     }
 
     // Increment the building counter in state
+    console.log(buildingId, building)
     building.count += 1
 
     // Update any values that need to be updated based on the modifiers
-    if (!building.generates) {
-        return
-    }
-
     updateStateFromGenerates(building.generates, 1)
 
 }

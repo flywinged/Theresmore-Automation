@@ -1,46 +1,51 @@
 import { navigation } from "../../utils"
 import constants from "../../utils/constants"
 import { research } from "../data"
-import getButtons from "../helpers/getButtons"
+import getBuyableButtons from "../helpers/getBuyableButtons"
 import { updateStateFromGenerates } from "./generates"
 
 // Get the current state of all research
-export const initializeResearchState = async () => {
+export const getResearchState = async (initialize) => {
 
-    // Assume all things are not researched
-    for (const [researchId, researchData] of Object.entries(research)) {
-        researchData.researched = false
+    if (initialize) {
+
+        // Assume all things are not researched at the start
+        for (const [researchId, researchData] of Object.entries(research)) {
+            researchData.div = null
+            researchData.count = 0
+        }
+
+        await getResearchState(false)
+        await navigation.switchSubPage(constants.SUBPAGES.RESEARCH_COMPLETED, constants.PAGES.RESEARCH)
+    } else {
+        // Switch to the completed page to determine what has already been researched
+        await navigation.switchSubPage(constants.SUBPAGES.RESEARCH, constants.PAGES.RESEARCH)
     }
 
-    // Switch to the completed page to determine what has already been researched
-    await navigation.switchSubPage(constants.SUBPAGES.RESEARCH_COMPLETED, constants.PAGES.RESEARCH)
-
-    let buttons = getButtons(research)
+    let buttons = getBuyableButtons(research)
     for (const [researchId, researchData] of Object.entries(buttons)) {
         let foundResearch = research[researchId]
         if (foundResearch) {
-            foundResearch.researched = true
+            foundResearch.count = true && initialize ? 1 : 0
+            foundResearch.div = researchData.div
         }
     }
 
-    console.log("initial research state", research)
+    console.log({initialize, research})
     return research
 
 }
 
 export const completeResearch = async (researchId) => {
-    let tech = research[researchId]
-    if (!tech) {
+    let data = research[researchId]
+    if (!data) {
         logger({msgLevel: "error", msg: 'unable to "completeResearch(' + researchId + ")"})
     }
 
-    // Increment the research counter in state
-    tech.count += 1
+    // Increment the research counter in state and remove the div
+    data.count += 1
+    data.div = null
 
     // Update any values that need to be updated based on the modifiers
-    if (!tech.generates) {
-        return
-    }
-
-    updateStateFromGenerates(tech.generates, 1)
+    updateStateFromGenerates(data.generates, 1)
 }

@@ -32961,10 +32961,7 @@ const taVersion = "4.8.1";
         switchedPage = true;
       }
       if (switchedPage) {
-        logger$1({
-          msgLevel: 'debug',
-          msg: `Switched page to ${page}`
-        });
+        // logger({ msgLevel: 'debug', msg: `Switched page to ${page}` })
         await sleep(1000);
       }
     };
@@ -32983,10 +32980,7 @@ const taVersion = "4.8.1";
           switchedSubPage = true;
         }
         if (switchedSubPage) {
-          logger$1({
-            msgLevel: 'debug',
-            msg: `Switched subPage to ${subPage}`
-          });
+          // logger({ msgLevel: 'debug', msg: `Switched subPage to ${subPage}` })
           await sleep(500);
         }
       }
@@ -33252,49 +33246,6 @@ const taVersion = "4.8.1";
         setMaxResources('special', amount);
       }
     };
-
-    factions.concat(locations).filter(fight => !fight.id.includes('orc_war_party_')).map(fight => {
-      return {
-        key: fight.id,
-        id: translate(fight.id),
-        army: fight.army,
-        level: fight.level
-      };
-    }).filter(fight => typeof fight.level !== 'undefined');
-    factions.map(faction => faction.id);
-
-    localStorage.get('lastSell') || {};
-
-    jobs$1.filter(job => job.gen && job.gen.length).map(job => {
-      return {
-        ...job,
-        id: translate(job.id, 'pop_'),
-        key: job.id,
-        gen: job.gen.filter(gen => gen.type === 'resource').map(gen => {
-          return {
-            id: gen.id,
-            value: gen.value
-          };
-        })
-      };
-    }).map(job => {
-      return {
-        ...job,
-        isSafe: !job.gen.find(gen => gen.value < 0),
-        resourcesGenerated: job.gen.filter(gen => gen.value > 0).map(gen => {
-          return {
-            id: gen.id,
-            value: gen.value
-          };
-        }),
-        resourcesUsed: job.gen.filter(gen => gen.value < 0).map(gen => {
-          return {
-            id: gen.id,
-            value: gen.value
-          };
-        })
-      };
-    });
 
     const calculateTippyTTF = () => {
       let potentialResourcesToFillTable = document.querySelectorAll('div.tippy-box > div.tippy-content > div > div > table');
@@ -34868,6 +34819,8 @@ const taVersion = "4.8.1";
     };
 
     var common_house = {
+    	div: null,
+    	count: 0,
     	requires: [
     		{
     			type: "resource",
@@ -34906,6 +34859,8 @@ const taVersion = "4.8.1";
     	]
     };
     var farm = {
+    	div: null,
+    	count: 0,
     	requires: [
     		{
     			type: "resource",
@@ -34940,48 +34895,143 @@ const taVersion = "4.8.1";
     		}
     	]
     };
+    var lumberjack_camp = {
+    	div: null,
+    	count: 0,
+    	requires: [
+    		{
+    			type: "resource",
+    			id: "gold",
+    			value: 25,
+    			multiplier: 1.4
+    		},
+    		{
+    			type: "resource",
+    			id: "wood",
+    			value: 18,
+    			multiplier: 1.4
+    		},
+    		{
+    			type: "resource",
+    			id: "stone",
+    			value: 5,
+    			multiplier: 1.4
+    		}
+    	],
+    	generates: [
+    		{
+    			type: "job",
+    			id: "lumberjack",
+    			value: 1
+    		},
+    		{
+    			type: "modifier",
+    			modifierType: "job_resource",
+    			jobId: "lumberjack",
+    			resourceId: "wood",
+    			value: 0.01
+    		},
+    		{
+    			type: "cap",
+    			id: "wood",
+    			value: 100
+    		}
+    	]
+    };
+    var quarry = {
+    	div: null,
+    	count: 0,
+    	requires: [
+    		{
+    			type: "resource",
+    			id: "gold",
+    			value: 32,
+    			multiplier: 1.4
+    		},
+    		{
+    			type: "resource",
+    			id: "wood",
+    			value: 24,
+    			multiplier: 1.4
+    		},
+    		{
+    			type: "resource",
+    			id: "stone",
+    			value: 8,
+    			multiplier: 1.4
+    		}
+    	],
+    	generates: [
+    		{
+    			type: "job",
+    			id: "quarryman",
+    			value: 1
+    		},
+    		{
+    			type: "modifier",
+    			modifierType: "job_resource",
+    			jobId: "quarryman",
+    			resourceId: "stone",
+    			value: 0.01
+    		},
+    		{
+    			type: "cap",
+    			id: "stone",
+    			value: 100
+    		}
+    	]
+    };
     var buildings = {
     	common_house: common_house,
-    	farm: farm
+    	farm: farm,
+    	lumberjack_camp: lumberjack_camp,
+    	quarry: quarry
     };
 
     var unemployed = {
     	cap: 0,
-    	count: 0
+    	count: 0,
+    	div: null
     };
     var farmer = {
     	cap: 0,
     	count: 0,
+    	addDiv: null,
+    	removeDiv: null,
     	generates: [
     		{
     			type: "resource",
     			id: "food",
     			value: 1.6,
-    			bonus: 1
+    			bonus: 0
     		}
     	]
     };
     var lumberjack = {
     	cap: 0,
     	count: 0,
+    	addDiv: null,
+    	removeDiv: null,
     	generates: [
     		{
     			type: "resource",
     			id: "wood",
     			value: 0.7,
-    			bonus: 1
+    			bonus: 0
     		}
     	]
     };
     var quarryman = {
     	cap: 0,
     	count: 0,
+    	addDiv: null,
+    	removeDiv: null,
     	generates: [
     		{
     			type: "resource",
     			id: "stone",
     			value: 0.6,
-    			bonus: 1
+    			bonus: 0
     		}
     	]
     };
@@ -34992,31 +35042,51 @@ const taVersion = "4.8.1";
     	quarryman: quarryman
     };
 
-    var research$2 = {
+    var research$1 = {
     	cap: 500,
-    	bonus: 1
+    	count: 0,
+    	rate: 0,
+    	timeToFull: 0,
+    	timeToEmpty: 0,
+    	bonus: 0
     };
     var gold = {
     	cap: 600,
-    	bonus: 1
+    	count: 0,
+    	rate: 0,
+    	timeToFull: 0,
+    	timeToEmpty: 0,
+    	bonus: 0
     };
     var food = {
     	manual: true,
     	cap: 300,
-    	bonus: 1
+    	count: 0,
+    	rate: 0,
+    	timeToFull: 0,
+    	timeToEmpty: 0,
+    	bonus: 0
     };
     var wood = {
     	manual: true,
     	cap: 300,
-    	bonus: 1
+    	count: 0,
+    	rate: 0,
+    	timeToFull: 0,
+    	timeToEmpty: 0,
+    	bonus: 0
     };
     var stone = {
     	manual: true,
     	cap: 300,
-    	bonus: 1
+    	count: 0,
+    	rate: 0,
+    	timeToFull: 0,
+    	timeToEmpty: 0,
+    	bonus: 0
     };
     var resources = {
-    	research: research$2,
+    	research: research$1,
     	gold: gold,
     	food: food,
     	wood: wood,
@@ -35024,36 +35094,66 @@ const taVersion = "4.8.1";
     };
 
     var housing = {
-    	researched: false
+    	div: null,
+    	count: 0
     };
     var agriculture = {
-    	researched: false,
+    	div: null,
+    	count: 0,
     	requires: [
     		{
     			type: "resource",
     			id: "research",
     			value: 10
+    		},
+    		{
+    			type: "research",
+    			id: "housing",
+    			value: 1
     		}
     	]
     };
     var stone_masonry = {
-    	researched: false,
+    	div: null,
+    	count: 0,
     	requires: [
     		{
     			type: "resource",
     			id: "research",
     			value: 20
+    		},
+    		{
+    			type: "research",
+    			id: "housing",
+    			value: 1
     		}
     	]
     };
-    var research$1 = {
+    var wood_cutting = {
+    	div: null,
+    	count: 0,
+    	requires: [
+    		{
+    			type: "resource",
+    			id: "research",
+    			value: 20
+    		},
+    		{
+    			type: "research",
+    			id: "housing",
+    			value: 1
+    		}
+    	]
+    };
+    var research = {
     	housing: housing,
     	agriculture: agriculture,
-    	stone_masonry: stone_masonry
+    	stone_masonry: stone_masonry,
+    	wood_cutting: wood_cutting
     };
 
     // Get all the buttons currently on the screen
-    var getButtons = (referenceData => {
+    var getBuyableButtons = (referenceData => {
       // Grab the buttons and their data before trying to do anything else
       const buttonsDivs = selectors.getAllButtons(false);
 
@@ -35072,18 +35172,107 @@ const taVersion = "4.8.1";
         // Warn if unable to find it
         let buttonData = referenceData[id];
         if (!buttonData) {
+          logger$1({
+            msgLevel: "error",
+            msg: "could not find data for button " + buttonText
+          });
           return;
         }
         buttons[id] = {
           div,
-          count,
-          data: buttonData
+          count
         };
       });
       return buttons;
     });
 
+    const getResourceState = () => {
+      // Loop through all the divs that contain resource information
+      const resourcesDivs = [...document.querySelectorAll('#root div > div > div > table > tbody > tr > td:nth-child(1) > span')];
+      resourcesDivs.map(resourceDiv => {
+        // Grab the name of the resource and intialize its data
+        let rawKey = reactUtil.getNearestKey(resourceDiv, 6);
+        const resourceId = rawKey.split("_")[1];
+        let resource = resources[resourceId];
+        if (!resource) {
+          logger$1({
+            msgLevel: "error",
+            msg: "unable to find resource data for " + resourceId
+          });
+        }
+
+        // Grab all the resources values based on the resourceDiv
+        const values = resourceDiv.parentNode.parentNode.childNodes[1].textContent.split('/').map(x => numberParser.parse(x.replace(/[^0-9KM\-,\.]/g, '').trim()));
+
+        // Simple Values
+        resource.count = values[0];
+        resource.cap = values[1];
+
+        // Current rate for the resource
+        resource.rate = numberParser.parse(resourceDiv.parentNode.parentNode.childNodes[2].textContent.replace(/[^0-9KM\-,\.]/g, '').trim()) || 0;
+
+        // Calculate full and empty times if applicable for each resource
+        resource.timeToFull = null;
+        if (resource.speed > 0 && resource.max !== resource.current) {
+          resource.timeToFull = Math.ceil((resource.max - resource.current) / resource.speed);
+        }
+        resource.timeToEmpty = null;
+        if (resource.speed < 0 && resource.current) {
+          resource.timeToEmpty = Math.ceil(resource.current / (resource.speed * -1));
+        }
+      });
+      return resources;
+    };
+
+    var deficet = {};
+    const updateDeficet = requirements => {
+      getResourceState();
+      deficet = {};
+      let noDeficet = true;
+      for (const [resourceId, value] of Object.entries(requirements)) {
+        let resourceDiff = resources[resourceId].count - value;
+        deficet[resourceId] = resourceDiff;
+        if (resourceDiff < 0 || isNaN(resourceDiff)) {
+          noDeficet = false;
+          if (isNaN(resourceDiff)) {
+            console.log({
+              requirements,
+              resources,
+              deficet
+            });
+            logger({
+              msgLevel: "error",
+              msg: "NaN deficit"
+            });
+          }
+        }
+      }
+      if (noDeficet) {
+        return null;
+      }
+      return {
+        ...deficet
+      };
+    };
+    const getDeficet = () => {
+      let noDeficet = true;
+      for (const [_, value] of Object.entries(deficet)) {
+        if (value < 0) {
+          noDeficet = false;
+        }
+      }
+      if (noDeficet) {
+        return null;
+      }
+      return {
+        ...deficet
+      };
+    };
+
     const updateStateFromGenerates = (generatesArray, count) => {
+      if (!generatesArray) {
+        return;
+      }
       generatesArray.forEach(gen => {
         // Population based changes
         if (gen.type === "job") {
@@ -35130,12 +35319,288 @@ const taVersion = "4.8.1";
         }
       });
     };
+    const getGeneration = data => {
+      let generation = {};
+
+      // Loop through every object in the data file
+      for (const [id, objectData] of Object.entries(data)) {
+        if (!objectData.generates) {
+          continue;
+        }
+        objectData.generates.forEach(gen => {
+          if (gen.type === "resource") {
+            // Determine the bonus production of this resource
+            let bonus = resources[gen.id].bonus;
+            let production = objectData.count * gen.value * (1 + bonus);
+
+            // Accumulate the data production
+            if (gen.id in generation) {
+              generation[gen.id] += production;
+            } else {
+              generation[gen.id] = production;
+            }
+          }
+        });
+      }
+
+      // Loop through all the benefits
+      return generation;
+    };
+    const getJobGeneration = data => {
+      let generation = {};
+
+      // Loop through every object in the data file
+      for (const [id, objectData] of Object.entries(data)) {
+        if (!objectData.generates) {
+          continue;
+        }
+        generation[id] = {};
+        objectData.generates.forEach(gen => {
+          if (gen.type === "resource") {
+            // Determine the bonus production of this resource
+            let resourceBonus = resources[gen.id].bonus;
+            let jobBonus = gen.bonus;
+            let production = gen.value * (1 + resourceBonus + jobBonus);
+
+            // Accumulate the data production
+            generation[id][gen.id] = production;
+          }
+        });
+      }
+
+      // Loop through all the benefits
+      return generation;
+    };
+
+    // Helper function for adding the current state to a generation object
+    const calculateBaseGeneration = () => {
+      let generation = {};
+      for (const [id, data] of Object.entries(resources)) {
+        generation[id] = 0;
+      }
+      let dataArrays = [buildings, research];
+      dataArrays.forEach(data => {
+        let subGeneration = getGeneration(data);
+        for (const [id, value] of Object.entries(subGeneration)) {
+          generation[id] += value;
+        }
+      });
+      return generation;
+    };
+
+    const getJobState = async () => {
+      // Assume all things are not researched
+      for (const [jobId, jobData] of Object.entries(jobs)) {
+        jobData.count = 0;
+        jobData.cap = 0;
+        if (jobId !== "unemployed") {
+          jobData.addDiv = null;
+          jobData.removeDiv = null;
+        } else {
+          jobData.div = null;
+        }
+      }
+
+      // Make sure we are on the jobs page first
+      await navigation.switchPage(constants.PAGES.POPULATION);
+
+      // Grab the main container the has all the required data and list all the currently available jobs
+      const container = document.querySelector('#maintabs-container > div > div[role=tabpanel]');
+      const availableJobs = [...container.querySelectorAll('h5')];
+
+      // For each visible job, grab information about the current job state
+      availableJobs.forEach(job => {
+        let id = job.textContent.replace(" ", "_").toLowerCase();
+        const jobData = jobs[id];
+        if (!jobData) {
+          console.log(id);
+          logger$1({
+            msgLevel: "error",
+            msg: "unable to find job data"
+          });
+        }
+        let jobContainer = job.parentElement.parentElement;
+        jobData.count = +job.parentElement.parentElement.querySelector('input').value.split('/').shift().trim();
+        jobData.cap = +job.parentElement.parentElement.querySelector('input').value.split('/').pop().trim();
+        jobData.addDiv = jobContainer.querySelector('button.btn-green');
+        jobData.removeDiv = jobContainer.querySelector('button.btn-red');
+      });
+
+      // Assign the unassing all button to unemployed if able
+      const unassignAllButton = document.querySelector('div.flex.justify-center.mx-auto.pt-3.font-bold.text-lg > button');
+      if (unassignAllButton) {
+        jobs.unemployed.div = unassignAllButton;
+      }
+      const unemployedData = document.querySelector('div.flex.justify-center.mx-auto.pt-3.font-bold.text-lg > span');
+      if (unemployedData) {
+        let splitData = unemployedData.textContent.split(" / ");
+        jobs.unemployed.count = numberParser.parse(splitData[0]);
+        jobs.unemployed.cap = numberParser.parse(splitData[1]);
+      }
+      console.log({
+        jobs
+      });
+      return jobs;
+    };
+
+    const FULL_WIDTH = 20;
+    const FULL_BASE = 1.5;
+
+    // Allocate population to fulfill the missing deficet in the most reasonable amount of time
+    const distributePopulation = async () => {
+      let deficet = getDeficet();
+
+      /*
+          If there is no population is available, then we can just return
+          as there is nothing to do.
+      */
+      if (jobs.unemployed.cap === 0) {
+        return;
+      }
+
+      // Calculate the passive generation of the system, without including population
+      let generation = calculateBaseGeneration();
+
+      // Determine the impact of each job, including bonuses
+      let jobImpact = getJobGeneration(jobs);
+
+      /*
+          Calculate the fastest way to fulfill the deficet,
+          ensuring that food production is always stable.
+      */
+      let jobCount = {};
+      for (let i = 0; i < jobs.unemployed.cap; i++) {
+        let selectedJob = findBestJob(generation, deficet, jobImpact, jobCount);
+
+        // No valid job found
+        if (selectedJob === null) {
+          break;
+        }
+        if (selectedJob in jobCount) {
+          jobCount[selectedJob] += 1;
+        } else {
+          jobCount[selectedJob] = 1;
+        }
+
+        // Adjust the generation baed on the selected job
+        for (const [id, value] of Object.entries(jobImpact[selectedJob])) {
+          generation[id] += value;
+        }
+      }
+
+      // Determine if there are any differences between this configuration
+      // and the existing configuration. If there are, we will reallocate.
+      for (const [jobId, count] of Object.entries(jobCount)) {
+        if (jobs[jobId].count !== count) {
+          await clickButtons(jobCount);
+          return;
+        }
+      }
+    };
+    const clickButtons = async jobCount => {
+      // Switch to the population page and make sure all the buttons are updated
+      await getJobState();
+
+      // Clear the current jobs
+      if (jobs.unemployed.div !== null) {
+        await jobs.unemployed.div.click();
+        jobs.unemployed.count = 0;
+      }
+
+      // Get a list of all the buttons again now that the add button is there now
+      await getJobState();
+
+      // Joop through all the job counts and apply the correct workers
+      for (const [id, count] of Object.entries(jobCount)) {
+        for (let i = 0; i < count; i++) {
+          await jobs[id].addDiv.click();
+        }
+        jobs[id].count = count;
+      }
+      await sleep(1000);
+    };
+    const findBestJob = (generation, deficet, jobImpact, jobCount) => {
+      // Used to define the job to choose
+      let selectedJob = null;
+      let selectedScore = null;
+
+      // Get the baeline score
+      let baseline = scoreSetup(generation, deficet);
+
+      // Prioritize negative values, starting with food
+      for (const [jobId, jobGeneration] of Object.entries(jobImpact)) {
+        // Can't select this job if no available slots left
+        if (jobCount[jobId] === undefined) {
+          jobCount[jobId] = 0;
+        }
+        if (jobCount[jobId] >= jobs[jobId].cap) {
+          continue;
+        }
+
+        // Create a copy of the generation object
+        let selectedJobGeneration = {
+          ...generation
+        };
+        for (const [resourceId, resourceValue] of Object.entries(jobGeneration)) {
+          selectedJobGeneration[resourceId] += resourceValue;
+        }
+
+        // Score the selection of this job
+        let score = scoreSetup(selectedJobGeneration, deficet) - baseline;
+
+        // Track this as the best option if we can
+        if (selectedJob === null || score > selectedScore) {
+          selectedJob = jobId;
+          selectedScore = score;
+        }
+      }
+      return selectedJob;
+    };
+    const scoreSetup = (generation, deficet) => {
+      // Objects to track the amount of time it will take
+      // to reach full, empty, and fulfilling the deficet
+      let fullScores = {};
+      let emptyScores = {};
+      let deficetScores = {};
+      for (const [id, genRate] of Object.entries(generation)) {
+        // Set full/empty times to null to begin with
+        fullScores[id] = null;
+        emptyScores[id] = null;
+
+        // Determine the full or empty scores
+        if (genRate !== 0) {
+          if (genRate < 0) {
+            emptyScores[id] = genRate;
+          } else {
+            fullScores[id] = -Math.log(1 / (genRate / FULL_WIDTH + 1)) / Math.log(FULL_BASE);
+          }
+        }
+
+        // Determine the time to remove the deficet
+        if (deficet && id in deficet && deficet[id] < 0) {
+          let d = -deficet[id];
+          deficetScores[id] = -Math.log(d / (genRate + 1)) + Math.log(d);
+        }
+      }
+      let score = 0;
+      for (const [_, value] of Object.entries(fullScores)) {
+        score += value;
+      }
+      for (const [_, value] of Object.entries(emptyScores)) {
+        score += value;
+      }
+      for (const [_, value] of Object.entries(deficetScores)) {
+        score += value;
+      }
+      return score;
+    };
 
     // Get the current state of all building
-    const initializeBuildingState = async () => {
-      for (const [buildingId, buildingData] of Object.entries(buildings)) {
+    const getBuildingState = async initialize => {
+      for (const [_, buildingData] of Object.entries(buildings)) {
         buildingData.count = 0;
-        if (buildingData.generates) {
+        buildingData.div = null;
+        if (initialize && buildingData.generates) {
           buildingData.generates.forEach(gen => {
             if (gen.type == "resource") {
               gen.multiplier = 1;
@@ -35146,14 +35611,20 @@ const taVersion = "4.8.1";
 
       // Switch to the completed page to determine what has already been buildinged
       await navigation.switchSubPage(constants.SUBPAGES.CITY, constants.PAGES.BUILD);
-      let buttons = getButtons(buildings);
+      let buttons = getBuyableButtons(buildings);
       for (const [buildingId, buildingData] of Object.entries(buttons)) {
         let foundBuilding = buildings[buildingId];
         if (foundBuilding) {
+          if (initialize) {
+            updateStateFromGenerates(foundBuilding.generates, buildingData.count);
+          }
           foundBuilding.count = buildingData.count;
+          foundBuilding.div = buildingData.div;
         }
       }
-      console.log("initial building state", buildings);
+      console.log({
+        buildings
+      });
       return buildings;
     };
 
@@ -35168,64 +35639,13 @@ const taVersion = "4.8.1";
       }
 
       // Increment the building counter in state
+      console.log(buildingId, building);
       building.count += 1;
 
       // Update any values that need to be updated based on the modifiers
-      if (!building.generates) {
-        return;
-      }
       updateStateFromGenerates(building.generates, 1);
     };
 
-    var getResourceState = (() => {
-      // Final resources objects to populate with current data
-      let resources = {};
-
-      // Loop through all the divs that contain resource information
-      const resourcesDivs = [...document.querySelectorAll('#root div > div > div > table > tbody > tr > td:nth-child(1) > span')];
-      resourcesDivs.map(resourceDiv => {
-        // Grab the name of the resource and intialize its data
-        let rawKey = reactUtil.getNearestKey(resourceDiv, 6);
-        const resourceName = rawKey.split("_")[1];
-        let resource = {
-          name: resourceName,
-          current: 0,
-          max: 0,
-          speed: 0,
-          ttf: null,
-          ttz: null
-        };
-
-        // Grab all the resources values based on the resourceDiv
-        const values = resourceDiv.parentNode.parentNode.childNodes[1].textContent.split('/').map(x => numberParser.parse(x.replace(/[^0-9KM\-,\.]/g, '').trim()));
-
-        // Simple Values
-        resource.current = values[0];
-        resource.max = values[1];
-
-        // Current rate for the resource
-        resource.speed = numberParser.parse(resourceDiv.parentNode.parentNode.childNodes[2].textContent.replace(/[^0-9KM\-,\.]/g, '').trim()) || 0;
-
-        // Calculate full and empty times if applicable for each resource
-        // ttf = time till full
-        // ttz = time till zero
-        resource.ttf = null;
-        if (resource.speed > 0 && resource.max !== resource.current) {
-          formatTime(Math.ceil((resource.max - resource.current) / resource.speed));
-        }
-        resource.ttz = null;
-        if (resource.speed < 0 && resource.current) {
-          formatTime(Math.ceil(resource.current / (resource.speed * -1)));
-        }
-
-        // Save the resource before moving onto the next one
-        resources[resourceName] = resource;
-      });
-      return resources;
-    });
-
-    // Used to track if balancing has occured already for a given buy task
-    var canBalance = true;
     var buy = (({
       id,
       count,
@@ -35234,9 +35654,10 @@ const taVersion = "4.8.1";
       subpage,
       // Optional
       referenceData,
-      // json data loaded in
-      replacementMap,
-      // Map of corrections to make
+      // json data relevant to this purchase
+
+      before,
+      // Function to call before beginning this automation
       onClick,
       // Function to call when the button is clicked
 
@@ -35254,83 +35675,76 @@ const taVersion = "4.8.1";
             delay: 0
           };
 
-          // Switch to the navigations tab and grab all the buttons
+          // Switch to the correct tab (if not already there)
           if (subpage) {
             await navigation.switchSubPage(page, subpage);
           } else {
             await navigation.switchPage(page);
           }
 
-          // Grab all the buttons on the relevant page
-          const buttons = getButtons(referenceData);
-
           // Check to see if the requested button even exists. If not, log a warning and continue
-          let button = buttons[id];
-          if (!button) {
-            console.log({
-              id,
-              buttons
-            });
+          let data = referenceData[id];
+          if (!data) {
             logger$1({
               msgLevel: "error",
-              msg: "unable to find button " + id + "."
+              msg: "unable to find reference data for"
             });
             ret.complete = true;
             return ret;
           }
 
           // Check to see if we have enough of the button. If so, immediately return
-          if (button.count >= count) {
+          if (data.count >= count) {
             ret.complete = true;
             return ret;
           }
 
-          // If the button does exist, we want to see if we can purchase it
-          let resources = getResourceState();
+          // If the data does exist, we want to see if we can buy it
           let resourcesRequirements = {};
-          if (button.data.requires) {
-            button.data.requires.forEach(req => {
+          if (data.requires) {
+            data.requires.forEach(req => {
               if (req.type == "resource") {
-                resourcesRequirements[req.id] = req.value * Math.pow(req.multiplier, button.count);
+                resourcesRequirements[req.id] = req.value * Math.pow(req.multiplier, data.count);
               }
             });
           }
 
           // If we have all the requirements for the building, then building it!
-          let resourceDeficit = {};
-          let canClick = true;
-          for (const [resourceId, value] of Object.entries(resourcesRequirements)) {
-            let deficit = resources[resourceId].current - value;
-            resourceDeficit[resourceId] = deficit;
-            if (deficit < 0) {
-              canClick = false;
-            }
-          }
+          let deficet = updateDeficet(resourcesRequirements);
+          console.log({
+            deficet,
+            resourcesRequirements
+          });
 
           // Click the button if we can. Otherwise, we want to rebalance resources accordingly
-          if (canClick) {
-            console.log({
-              resourcesRequirements,
-              resources,
-              resourceDeficit
-            });
-            button.div.click();
-            if (onClick) {
-              onClick();
-            }
-            ret.delay = delayBuy;
-            if (button.count + 1 >= count) {
+          if (deficet === null) {
+            if (data.div) {
+              await data.div.click();
+              if (onClick) {
+                onClick();
+              }
+              ret.delay = delayBuy;
+              if (data.count >= count) {
+                ret.complete = true;
+              }
+            } else {
+              console.log({
+                data
+              });
+              logger$1({
+                msgLevel: "error",
+                msg: "unable to find div for " + id
+              });
               ret.complete = true;
+              ret.delay = 0;
             }
-            canBalance = true;
-          } else if (canBalance) {
-            console.log("BALANCING");
-            // balanceResources(resourceDeficit)
-            canBalance = false;
-            ret.delay = 1000;
+          } else {
+            ret.delay = 250; // To not overload on waiting
           }
+
           return ret;
         },
+        before,
         log: {
           msgLevel: "log",
           msg: 'buying ' + count + ' "' + id + '"'
@@ -35338,86 +35752,97 @@ const taVersion = "4.8.1";
       };
     });
 
-    var cityBuilding = ((buildingId, count) => {
+    const automateCityBuild = (buildingId, count) => {
       return buy({
         id: buildingId,
         count: count,
         page: constants.PAGES.BUILD,
         subpage: constants.SUBPAGES.CITY,
         referenceData: buildings,
-        onClick: () => {
+        before: async () => {
+          await getBuildingState(false);
+        },
+        onClick: async () => {
           makeBuilding(buildingId);
         },
         delayBuy: 2500
       });
-    });
+    };
 
     // Get the current state of all research
-    const initializeResearchState = async () => {
-      // Assume all things are not researched
-      for (const [researchId, researchData] of Object.entries(research$1)) {
-        researchData.researched = false;
+    const getResearchState = async initialize => {
+      if (initialize) {
+        // Assume all things are not researched at the start
+        for (const [researchId, researchData] of Object.entries(research)) {
+          researchData.div = null;
+          researchData.count = 0;
+        }
+        await getResearchState(false);
+        await navigation.switchSubPage(constants.SUBPAGES.RESEARCH_COMPLETED, constants.PAGES.RESEARCH);
+      } else {
+        // Switch to the completed page to determine what has already been researched
+        await navigation.switchSubPage(constants.SUBPAGES.RESEARCH, constants.PAGES.RESEARCH);
       }
-
-      // Switch to the completed page to determine what has already been researched
-      await navigation.switchSubPage(constants.SUBPAGES.RESEARCH_COMPLETED, constants.PAGES.RESEARCH);
-      let buttons = getButtons(research$1);
+      let buttons = getBuyableButtons(research);
       for (const [researchId, researchData] of Object.entries(buttons)) {
-        let foundResearch = research$1[researchId];
+        let foundResearch = research[researchId];
         if (foundResearch) {
-          foundResearch.researched = true;
+          foundResearch.count = initialize ? 1 : 0;
+          foundResearch.div = researchData.div;
         }
       }
-      console.log("initial research state", research$1);
-      return research$1;
+      console.log({
+        initialize,
+        research
+      });
+      return research;
     };
     const completeResearch = async researchId => {
-      let tech = research$1[researchId];
-      if (!tech) {
+      let data = research[researchId];
+      if (!data) {
         logger({
           msgLevel: "error",
           msg: 'unable to "completeResearch(' + researchId + ")"
         });
       }
 
-      // Increment the research counter in state
-      tech.count += 1;
+      // Increment the research counter in state and remove the div
+      data.count += 1;
+      data.div = null;
 
       // Update any values that need to be updated based on the modifiers
-      if (!tech.generates) {
-        return;
-      }
-      updateStateFromGenerates(tech.generates, 1);
+      updateStateFromGenerates(data.generates, 1);
     };
 
-    var research = (researchId => {
+    const automateResearch = researchId => {
       return buy({
         id: researchId,
         count: 1,
         page: constants.PAGES.RESEARCH,
         subpage: constants.SUBPAGES.RESEARCH,
-        referenceData: research$1,
-        onClick: () => {
+        referenceData: research,
+        before: async () => {
+          await getResearchState(false);
+        },
+        onClick: async () => {
           completeResearch(researchId);
         }
       });
-    });
+    };
 
     var standard = {
       index: 0,
       lastIndex: null,
       completed: null,
-      queueFunctions: [research("housing"), cityBuilding("common_house", 2), research("agriculture"), cityBuilding("farm", 2)
-
-      // population(),
-      ]
+      queueFunctions: [automateResearch("housing"), automateCityBuild("common_house", 3), automateResearch("agriculture"), automateCityBuild("farm", 3), automateResearch("wood_cutting"), automateResearch("stone_masonry"), automateCityBuild("common_house", 5), automateCityBuild("lumberjack_camp", 1), automateCityBuild("quarry", 1), automateCityBuild("common_house", 7)]
     };
-
     var queues = {
       standard
     };
 
     async function automate (queueName) {
+      // Determine if there is a more optimal way to distribute our population
+      await distributePopulation();
       let queue = queues[queueName];
       if (queue.completed) {
         return 1000;
@@ -35435,8 +35860,12 @@ const taVersion = "4.8.1";
         logger$1(step.log);
         queue.lastIndex = queue.index;
       }
+      if (step.before) {
+        await step.before();
+      }
       let response = await step.function();
       if (response.complete) {
+        console.log("completing step", queue.index);
         queue.index = queue.index + 1;
       }
       return response.delay;
@@ -35491,8 +35920,9 @@ const taVersion = "4.8.1";
         });
 
         // Initialize the current state of affairs
-        await initializeBuildingState();
-        await initializeResearchState();
+        await getBuildingState(true);
+        await getResearchState(true);
+        await getJobState();
         if (!hideFullPageOverlayInterval) {
           clearInterval(hideFullPageOverlayInterval);
           hideFullPageOverlayInterval = setInterval(tasks.cosmetics.hideFullPageOverlay, 500);

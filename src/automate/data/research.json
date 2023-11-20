@@ -1,25 +1,54 @@
 {
     "housing" : {
-        "researched": false
+        "div": null,
+        "count": 0
     },
     "agriculture" : {
-        "researched": false,
+        "div": null,
+        "count": 0,
         "requires": [
             {
                 "type": "resource",
                 "id": "research",
                 "value": 10
+            },
+            {
+                "type": "research",
+                "id": "housing",
+                "value": 1
             }
         ]
     },
     "stone_masonry" : {
-        "researched": false,
+        "div": null,
+        "count": 0,
         "requires": [
             {
                 "type": "resource",
                 "id": "research",
                 "value": 20
+            },
+            {
+                "type": "research",
+                "id": "housing",
+                "value": 1
             }
         ]
-      }
+    },
+    "wood_cutting" : {
+        "div": null,
+        "count": 0,
+        "requires": [
+            {
+                "type": "resource",
+                "id": "research",
+                "value": 20
+            },
+            {
+                "type": "research",
+                "id": "housing",
+                "value": 1
+            }
+        ]
+    }
 }

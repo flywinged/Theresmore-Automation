@@ -1,9 +1,9 @@
 import { sleep, logger, localStorage, state, runMigrations, CONSTANTS } from './utils'
-import pages from './pages'
 import tasks from './tasks'
 import automate from './automate'
-import { initializeBuildingState } from './automate/state/building'
-import { initializeResearchState } from './automate/state/research'
+import { getBuildingState } from './automate/state/building'
+import { getResearchState } from './automate/state/research'
+import { getJobState } from './automate/state/jobs'
 
 let mainLoopRunning = false
 let hideFullPageOverlayInterval
@@ -59,8 +59,9 @@ const start = async () => {
         logger({ msgLevel: 'log', msg: 'Starting automation' })
 
         // Initialize the current state of affairs
-        await initializeBuildingState()
-        await initializeResearchState()
+        await getBuildingState(true)
+        await getResearchState(true)
+        await getJobState()
         
         if (!hideFullPageOverlayInterval) {
             clearInterval(hideFullPageOverlayInterval)

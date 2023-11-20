@@ -77,7 +77,7 @@ const switchPage = async (page) => {
   }
 
   if (switchedPage) {
-    logger({ msgLevel: 'debug', msg: `Switched page to ${page}` })
+    // logger({ msgLevel: 'debug', msg: `Switched page to ${page}` })
     await sleep(1000)
   }
 }
@@ -101,7 +101,7 @@ const switchSubPage = async (subPage, page) => {
     }
 
     if (switchedSubPage) {
-      logger({ msgLevel: 'debug', msg: `Switched subPage to ${subPage}` })
+      // logger({ msgLevel: 'debug', msg: `Switched subPage to ${subPage}` })
       await sleep(500)
     }
   }

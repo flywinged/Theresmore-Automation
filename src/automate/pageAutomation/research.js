@@ -1,16 +1,19 @@
 import constants from '../../utils/constants'
 import { research } from '../data'
-import { completeResearch } from '../state/research'
+import { completeResearch, getResearchState } from '../state/research'
 import buy from './buy'
 
-export default (researchId) => {
+export const automateResearch = (researchId) => {
     return buy({
         id: researchId,
         count: 1,
         page: constants.PAGES.RESEARCH,
         subpage: constants.SUBPAGES.RESEARCH,
         referenceData: research,
-        onClick: () => {
+        before: async () => {
+            await getResearchState(false)
+        },
+        onClick: async () => {
             completeResearch(researchId)
         }
     })
