@@ -1,7 +1,9 @@
 import { navigation } from "../../utils"
 import constants from "../../utils/constants"
+import { error } from "../../utils/logger"
 import { research } from "../data"
 import getBuyableButtons from "../helpers/getBuyableButtons"
+import { getAchievementState } from "./achievements"
 import { updateStateFromGenerates } from "./generates"
 
 // Get the current state of all research
@@ -10,7 +12,8 @@ export const getResearchState = async (initialize) => {
     if (initialize) {
 
         // Assume all things are not researched at the start
-        for (const [researchId, researchData] of Object.entries(research)) {
+        for (const [id, researchData] of Object.entries(research)) {
+            researchData.id = "research|" + id
             researchData.div = null
             researchData.count = 0
         }
@@ -28,7 +31,15 @@ export const getResearchState = async (initialize) => {
         if (foundResearch) {
             foundResearch.count = true && initialize ? 1 : 0
             foundResearch.div = researchData.div
+            if (foundResearch.count) {
+                updateStateFromGenerates(foundResearch, 1)
+            }
         }
+    }
+
+    // Just better this way, lol
+    if (initialize) {
+        await navigation.switchSubPage(constants.SUBPAGES.RESEARCH, constants.PAGES.RESEARCH)
     }
 
     console.log({initialize, research})
@@ -39,7 +50,7 @@ export const getResearchState = async (initialize) => {
 export const completeResearch = async (researchId) => {
     let data = research[researchId]
     if (!data) {
-        logger({msgLevel: "error", msg: 'unable to "completeResearch(' + researchId + ")"})
+        error('unable to "completeResearch(' + researchId + ")")
     }
 
     // Increment the research counter in state and remove the div
@@ -47,5 +58,8 @@ export const completeResearch = async (researchId) => {
     data.div = null
 
     // Update any values that need to be updated based on the modifiers
-    updateStateFromGenerates(data.generates, 1)
+    updateStateFromGenerates(data, 1)
+
+    // Check achievements
+    getAchievementState(false)
 }

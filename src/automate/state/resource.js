@@ -1,11 +1,13 @@
 import { logger, numberParser, reactUtil } from "../../utils"
+import { error } from "../../utils/logger"
 import { resources } from "../data"
 
 export const resetResourceBonus = () => {
-    for (const [resourceId, resourceData] of Object.entries(resources)) {
+    for (const [id, resourceData] of Object.entries(resources)) {
+        resourceData.id = "resource|" + id
         resourceData.div = null
         resourceData.count = 0
-        resourceData.bonus = 1.0
+        resourceData.bonus = {}
     }
 }
 
@@ -20,7 +22,7 @@ export const getResourceState = () => {
         const resourceId = rawKey.split("_")[1]
         let resource = resources[resourceId]
         if (!resource) {
-            logger({msgLevel: "error", msg: "unable to find resource data for " + resourceId})
+            error("unable to find resource data for " + resourceId)
         }
 
         // Grab all the resources values based on the resourceDiv

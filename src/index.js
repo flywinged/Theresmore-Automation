@@ -4,6 +4,11 @@ import automate from './automate'
 import { getBuildingState } from './automate/state/building'
 import { getResearchState } from './automate/state/research'
 import { getJobState } from './automate/state/jobs'
+import { getAchievementState } from './automate/state/achievements'
+import { getResourceState, resetResourceBonus } from './automate/state/resource'
+import { getAncestorState } from './automate/state/ancestor'
+import { jobs, resources } from './automate/data'
+import { getJobGeneration } from './automate/state/generates'
 
 let mainLoopRunning = false
 let hideFullPageOverlayInterval
@@ -29,7 +34,7 @@ const mainLoop = async () => {
     mainLoopRunning = true
     
     while (!state.scriptPaused) {
-        let waitFor = await automate("standard")
+        let waitFor = await automate("queueEarlyGameStandard")
         await sleep(waitFor)
     }
     
@@ -59,9 +64,12 @@ const start = async () => {
         logger({ msgLevel: 'log', msg: 'Starting automation' })
 
         // Initialize the current state of affairs
+        resetResourceBonus()
         await getBuildingState(true)
         await getResearchState(true)
         await getJobState()
+        await getAchievementState(true)
+        await getAncestorState()
         
         if (!hideFullPageOverlayInterval) {
             clearInterval(hideFullPageOverlayInterval)

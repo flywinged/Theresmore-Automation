@@ -1,15 +1,17 @@
 import { logger, navigation, numberParser, selectors } from "../../utils"
 import constants from "../../utils/constants"
+import { error } from "../../utils/logger"
 import { jobs } from "../data"
 
 
 export const getJobState = async () => {
 
     // Assume all things are not researched
-    for (const [jobId, jobData] of Object.entries(jobs)) {
+    for (const [id, jobData] of Object.entries(jobs)) {
+        jobData.id = "job|" + id
         jobData.count = 0
         jobData.cap = 0
-        if (jobId !== "unemployed") {
+        if (id !== "unemployed") {
             jobData.addDiv = null
             jobData.removeDiv = null
         } else {
@@ -26,11 +28,11 @@ export const getJobState = async () => {
 
     // For each visible job, grab information about the current job state
     availableJobs.forEach(job => {
-        let id = job.textContent.replace(" ", "_").toLowerCase()
+        let id = job.textContent.replaceAll(" ", "_").toLowerCase()
         const jobData = jobs[id]
         if (!jobData) {
             console.log(id)
-            logger({msgLevel: "error", msg: "unable to find job data"})
+            error("unable to find job data")
         }
 
         let jobContainer = job.parentElement.parentElement

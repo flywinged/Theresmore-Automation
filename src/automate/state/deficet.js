@@ -1,3 +1,4 @@
+import { error } from "../../utils/logger"
 import { resources } from "../data"
 import { getResourceState } from "./resource"
 
@@ -16,7 +17,7 @@ export const updateDeficet = (requirements) => {
             noDeficet = false
             if (isNaN(resourceDiff)) {
                 console.log({requirements, resources, deficet})
-                logger({msgLevel: "error", msg: "NaN deficit"})
+                error("NaN deficit")
             }
         }
     }

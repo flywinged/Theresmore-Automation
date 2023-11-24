@@ -32797,12 +32797,13 @@ const taVersion = "4.8.1";
       };
     };
 
-    const logger$1 = ({
+    const logger = ({
       msgLevel,
       msg
     }) => {
       const logText = `[TA][${new Date().toLocaleTimeString()}] ${msg}`;
-      const levelsToLog = ['debug', 'log', 'error'];
+      const levelsToLog = ['debug', 'info', 'log', 'warn', 'error'];
+      console.log(msgLevel, msg);
       if (levelsToLog.includes(msgLevel)) {
         const logHolder = document.querySelector('#root > div > div > div > div.w-full.order-2.flex-grow.overflow-x-hidden.overflow-y-auto.pr-4');
         if (logHolder) {
@@ -32813,10 +32814,12 @@ const taVersion = "4.8.1";
             }
           }
           let color = 'text-white-600';
-          if (msgLevel == "log") {
+          if (msgLevel == "info") {
+            color = 'text-violet-500';
+          } else if (msgLevel == "log") {
             color = 'text-green-600';
-            // } else if (msgLevel == "warn") {
-            //   color = 'text-yellow-600'
+          } else if (msgLevel == "warn") {
+            color = 'text-orange-500';
           } else if (msgLevel == "error") {
             color = 'text-red-600';
           }
@@ -32827,6 +32830,18 @@ const taVersion = "4.8.1";
         }
       }
       console[msgLevel](logText);
+    };
+    const log = msg => {
+      logger({
+        msgLevel: "log",
+        msg
+      });
+    };
+    const error$1 = msg => {
+      logger({
+        msgLevel: "error",
+        msg
+      });
     };
 
     const prefix = 'TA_';
@@ -34818,338 +34833,311 @@ const taVersion = "4.8.1";
       updateStats
     };
 
-    var common_house = {
-    	div: null,
-    	count: 0,
-    	requires: [
-    		{
-    			type: "resource",
-    			id: "wood",
-    			value: 15,
-    			multiplier: 1.3
-    		},
-    		{
-    			type: "resource",
-    			id: "stone",
-    			value: 10,
-    			multiplier: 1.3
-    		}
-    	],
-    	generates: [
-    		{
-    			type: "resource",
-    			id: "food",
-    			value: -1
-    		},
-    		{
-    			type: "resource",
-    			id: "gold",
-    			value: 0.2
-    		},
-    		{
-    			type: "resource",
-    			id: "research",
-    			value: 0.3
-    		},
-    		{
-    			type: "job",
-    			id: "unemployed",
-    			value: 1
-    		}
-    	]
+    const generateResource = (id, value) => {
+      return {
+        type: "resource",
+        id: id,
+        value: value,
+        bonus: {}
+      };
     };
-    var farm = {
-    	div: null,
-    	count: 0,
-    	requires: [
-    		{
-    			type: "resource",
-    			id: "gold",
-    			value: 10,
-    			multiplier: 1.4
-    		},
-    		{
-    			type: "resource",
-    			id: "wood",
-    			value: 24,
-    			multiplier: 1.4
-    		}
-    	],
-    	generates: [
-    		{
-    			type: "job",
-    			id: "farmer",
-    			value: 1
-    		},
-    		{
-    			type: "modifier",
-    			modifierType: "job_resource",
-    			jobId: "farmer",
-    			resourceId: "food",
-    			value: 0.01
-    		},
-    		{
-    			type: "cap",
-    			id: "food",
-    			value: 240
-    		}
-    	]
+    const generateResourceBonus = (id, value) => {
+      return {
+        type: "modifier",
+        modifierType: "resource",
+        id: id,
+        value: value
+      };
     };
-    var lumberjack_camp = {
-    	div: null,
-    	count: 0,
-    	requires: [
-    		{
-    			type: "resource",
-    			id: "gold",
-    			value: 25,
-    			multiplier: 1.4
-    		},
-    		{
-    			type: "resource",
-    			id: "wood",
-    			value: 18,
-    			multiplier: 1.4
-    		},
-    		{
-    			type: "resource",
-    			id: "stone",
-    			value: 5,
-    			multiplier: 1.4
-    		}
-    	],
-    	generates: [
-    		{
-    			type: "job",
-    			id: "lumberjack",
-    			value: 1
-    		},
-    		{
-    			type: "modifier",
-    			modifierType: "job_resource",
-    			jobId: "lumberjack",
-    			resourceId: "wood",
-    			value: 0.01
-    		},
-    		{
-    			type: "cap",
-    			id: "wood",
-    			value: 100
-    		}
-    	]
+    const generateResourceCap = (id, value) => {
+      return {
+        type: "cap",
+        id: id,
+        value: value
+      };
     };
-    var quarry = {
-    	div: null,
-    	count: 0,
-    	requires: [
-    		{
-    			type: "resource",
-    			id: "gold",
-    			value: 32,
-    			multiplier: 1.4
-    		},
-    		{
-    			type: "resource",
-    			id: "wood",
-    			value: 24,
-    			multiplier: 1.4
-    		},
-    		{
-    			type: "resource",
-    			id: "stone",
-    			value: 8,
-    			multiplier: 1.4
-    		}
-    	],
-    	generates: [
-    		{
-    			type: "job",
-    			id: "quarryman",
-    			value: 1
-    		},
-    		{
-    			type: "modifier",
-    			modifierType: "job_resource",
-    			jobId: "quarryman",
-    			resourceId: "stone",
-    			value: 0.01
-    		},
-    		{
-    			type: "cap",
-    			id: "stone",
-    			value: 100
-    		}
-    	]
+    const generateJob = (id, value) => {
+      return {
+        type: "job",
+        id: id,
+        value: value
+      };
+    };
+    const generateJobBonus = (jobId, resourceId, value) => {
+      return {
+        type: "modifier",
+        modifierType: "job_bonus",
+        jobId: jobId,
+        resourceId: resourceId,
+        value: value
+      };
+    };
+
+    const createAncestor = (text, requires, generates) => {
+      return {
+        text,
+        count: 0,
+        requires,
+        generates
+      };
+    };
+    var ancestors = {
+      farming: createAncestor("Your ancestors have mastered the best farming techniques and food will never be a problem for your people", [], [generateResourceBonus("food", 0.1)]),
+      gathering: createAncestor("Your ancestors knew the best places to cut good wood and dig the finest stone", [], ["stone", "wood"].map(resource => generateResourceBonus(resource, 0.1))),
+      mining: createAncestor("Your ancestors knew how to refine metals and they used tools of rare workmanship", [], ["iron", "copper", "tools"].map(resource => generateResourceBonus(resource, 0.1)))
+    };
+
+    const requireResearch = id => {
+      return {
+        type: "research",
+        id: id,
+        count: 1
+      };
+    };
+    const requireBuilding = (id, value) => {
+      return {
+        type: "building",
+        id: id,
+        value: value
+      };
+    };
+    const requireResource = (id, value, multiplier) => {
+      return {
+        type: "resource",
+        id: id,
+        value: value,
+        multiplier: multiplier
+      };
+    };
+
+    const createAchievement = (requires, generates) => {
+      return {
+        count: 0,
+        requires,
+        generates
+      };
+    };
+    const livingQuarters$1 = {
+      // Common House
+      "5_common_house": createAchievement([requireBuilding("common_house", 5)], [generateResourceBonus("research", 0.01)]),
+      "15_common_house": createAchievement([requireBuilding("common_house", 15)], [generateResourceBonus("research", 0.02)])
+    };
+    const productionAndCrafting$1 = {
+      // Farm
+      "5_farm": createAchievement([requireBuilding("farm", 5)], [generateResourceBonus("food", 0.01)]),
+      "15_farm": createAchievement([requireBuilding("farm", 15)], [generateResourceBonus("food", 0.02)]),
+      // Lumberjack Camp
+      "5_lumberjack_camp": createAchievement([requireBuilding("lumberjack_camp", 5)], [generateResourceBonus("wood", 0.01)]),
+      "15_lumberjack_camp": createAchievement([requireBuilding("lumberjack_camp", 15)], [generateResourceBonus("wood", 0.02)]),
+      // Quarry
+      "5_quarry": createAchievement([requireBuilding("quarry", 5)], [generateResourceBonus("stone", 0.01)]),
+      "15_quarry": createAchievement([requireBuilding("quarry", 15)], [generateResourceBonus("stone", 0.02)])
+    };
+    const commercialArea$1 = {
+      // Artisan Workshop
+      "5_artisan_workshop": createAchievement([requireBuilding("artisan_workshop", 5)], [generateResourceBonus("gold", 0.01), generateResourceBonus("tools", 0.01)]),
+      "15_artisan_workshop": createAchievement([requireBuilding("artisan_workshop", 15)], [generateResourceBonus("gold", 0.02), generateResourceBonus("tools", 0.02)])
+    };
+    var achievements = {
+      // Buildings
+      ...livingQuarters$1,
+      ...productionAndCrafting$1,
+      ...commercialArea$1
+    };
+
+    const createBuilding = (requires, generates) => {
+      return {
+        div: null,
+        count: 0,
+        requires,
+        generates
+      };
+    };
+    const livingQuarters = {
+      "common_house": createBuilding([requireResource("wood", 15, 1.3), requireResource("stone", 10, 1.3)], [generateResource("food", -1), generateResource("gold", 0.2), generateResource("research", 0.3), generateJob("unemployed", 1)]),
+      "city_hall": createBuilding([requireResource("gold", 1200, 1.3), requireResource("wood", 1000, 1.3), requireResource("stone", 750, 1.3), requireResource("copper", 400, 1.3), requireResource("iron", 400, 1.3), requireResource("tools", 150, 1.3), requireResearch("municipal_administration")], [generateResource("food", -1.5), generateResourceCap("research", 250), generateJob("unemployed", 2)])
+    };
+    const productionAndCrafting = {
+      farm: createBuilding([requireResource("gold", 10, 1.4), requireResource("wood", 24, 1.4), requireResearch("agriculture")], [generateJob("farmer", 1), generateJobBonus("farmer", "food", 0.01), generateResourceCap("food", 240)]),
+      lumberjack_camp: createBuilding([requireResource("gold", 25, 1.4), requireResource("wood", 18, 1.4), requireResource("stone", 5, 1.4), requireResearch("wood_cutting")], [generateJob("lumberjack", 1), generateJobBonus("lumberjack", "wood", 0.01), generateResourceCap("wood", 100)]),
+      quarry: createBuilding([requireResource("gold", 32, 1.4), requireResource("wood", 24, 1.4), requireResource("stone", 8, 1.4), requireResearch("stone_masonry")], [generateJob("quarryman", 1), generateJobBonus("quarryman", "stone", 0.01), generateResourceCap("stone", 100)]),
+      mine: createBuilding([requireResource("gold", 160, 1.4), requireResource("wood", 140, 1.4), requireResource("stone", 80, 1.4), requireResearch("mining")], [generateJob("miner", 1), generateJobBonus("miner", "copper", 0.01), generateJobBonus("miner", "iron", 0.01), generateResourceCap("copper", 100), generateResourceCap("iron", 100)])
+    };
+    const commercialArea = {
+      artisan_workshop: createBuilding([requireResource("gold", 150, 1.4), requireResource("wood", 120, 1.4), requireResource("stone", 80, 1.4), requireResearch("pottery")], [generateJob("artisan", 1), generateJobBonus("farmer", "food", 0.02), generateJobBonus("lumberjack", "wood", 0.02), generateJobBonus("quarryman", "stone", 0.02), generateJobBonus("artisan", "gold", 0.02), generateJobBonus("artisan", "tools", 0.02), generateResourceCap("gold", 250), generateResourceCap("tools", 100)])
+    };
+    const knowledgeArea = {
+      school: createBuilding([requireResource("gold", 350, 1.3), requireResource("wood", 300, 1.3), requireResource("stone", 250, 1.3), requireResource("tools", 100, 1.3), requireResearch("writing")], [generateResource("research", 0.4), generateResourceBonus("research", 0.01), generateResourceCap("research", 1000)])
+    };
+    const storage = {
+      store: createBuilding([requireResource("wood", 500, 1.4), requireResource("stone", 300, 1.4), requireResource("tools", 150, 1.4), requireResearch("storage")], [generateResourceCap("wood", 500), generateResourceCap("stone", 500), generateResourceCap("copper", 250), generateResourceCap("iron", 250)])
     };
     var buildings = {
-    	common_house: common_house,
-    	farm: farm,
-    	lumberjack_camp: lumberjack_camp,
-    	quarry: quarry
+      ...livingQuarters,
+      ...productionAndCrafting,
+      ...commercialArea,
+      ...knowledgeArea,
+      ...storage
     };
 
-    var unemployed = {
-    	cap: 0,
-    	count: 0,
-    	div: null
-    };
-    var farmer = {
-    	cap: 0,
-    	count: 0,
-    	addDiv: null,
-    	removeDiv: null,
-    	generates: [
-    		{
-    			type: "resource",
-    			id: "food",
-    			value: 1.6,
-    			bonus: 0
-    		}
-    	]
-    };
-    var lumberjack = {
-    	cap: 0,
-    	count: 0,
-    	addDiv: null,
-    	removeDiv: null,
-    	generates: [
-    		{
-    			type: "resource",
-    			id: "wood",
-    			value: 0.7,
-    			bonus: 0
-    		}
-    	]
-    };
-    var quarryman = {
-    	cap: 0,
-    	count: 0,
-    	addDiv: null,
-    	removeDiv: null,
-    	generates: [
-    		{
-    			type: "resource",
-    			id: "stone",
-    			value: 0.6,
-    			bonus: 0
-    		}
-    	]
+    const createJob = (requires, generates) => {
+      return {
+        count: 0,
+        cap: 0,
+        addDiv: null,
+        removeDiv: null,
+        requires,
+        generates
+      };
     };
     var jobs = {
-    	unemployed: unemployed,
-    	farmer: farmer,
-    	lumberjack: lumberjack,
-    	quarryman: quarryman
+      unemployed: {
+        cap: 0,
+        count: 0,
+        div: null
+      },
+      farmer: createJob([], [generateResource("food", 1.6)]),
+      lumberjack: createJob([], [generateResource("wood", 0.7)]),
+      quarryman: createJob([], [generateResource("stone", 0.6)]),
+      miner: createJob([], [generateResource("copper", 0.5), generateResource("iron", 0.3)]),
+      artisan: createJob([], [generateResource("gold", 0.5), generateResource("tools", 0.3)])
     };
 
-    var research$1 = {
-    	cap: 500,
-    	count: 0,
-    	rate: 0,
-    	timeToFull: 0,
-    	timeToEmpty: 0,
-    	bonus: 0
-    };
-    var gold = {
-    	cap: 600,
-    	count: 0,
-    	rate: 0,
-    	timeToFull: 0,
-    	timeToEmpty: 0,
-    	bonus: 0
-    };
-    var food = {
-    	manual: true,
-    	cap: 300,
-    	count: 0,
-    	rate: 0,
-    	timeToFull: 0,
-    	timeToEmpty: 0,
-    	bonus: 0
-    };
-    var wood = {
-    	manual: true,
-    	cap: 300,
-    	count: 0,
-    	rate: 0,
-    	timeToFull: 0,
-    	timeToEmpty: 0,
-    	bonus: 0
-    };
-    var stone = {
-    	manual: true,
-    	cap: 300,
-    	count: 0,
-    	rate: 0,
-    	timeToFull: 0,
-    	timeToEmpty: 0,
-    	bonus: 0
-    };
     var resources = {
-    	research: research$1,
-    	gold: gold,
-    	food: food,
-    	wood: wood,
-    	stone: stone
+      research: {
+        cap: 500,
+        count: 0,
+        rate: 0,
+        timeToFull: 0,
+        timeToEmpty: 0,
+        bonus: {}
+      },
+      gold: {
+        cap: 600,
+        count: 0,
+        rate: 0,
+        timeToFull: 0,
+        timeToEmpty: 0,
+        bonus: {}
+      },
+      food: {
+        manual: true,
+        cap: 300,
+        count: 0,
+        rate: 0,
+        timeToFull: 0,
+        timeToEmpty: 0,
+        bonus: {}
+      },
+      wood: {
+        manual: true,
+        cap: 300,
+        count: 0,
+        rate: 0,
+        timeToFull: 0,
+        timeToEmpty: 0,
+        bonus: {}
+      },
+      stone: {
+        manual: true,
+        cap: 300,
+        count: 0,
+        rate: 0,
+        timeToFull: 0,
+        timeToEmpty: 0,
+        bonus: {}
+      },
+      copper: {
+        cap: 200,
+        count: 0,
+        rate: 0,
+        timeToFull: 0,
+        timeToEmpty: 0,
+        bonus: {}
+      },
+      iron: {
+        cap: 200,
+        count: 0,
+        rate: 0,
+        timeToFull: 0,
+        timeToEmpty: 0,
+        bonus: {}
+      },
+      tools: {
+        cap: 250,
+        count: 0,
+        rate: 0,
+        timeToFull: 0,
+        timeToEmpty: 0,
+        bonus: {}
+      },
+      army: {
+        "hidden": true,
+        cap: 0,
+        count: 0,
+        rate: 0,
+        timeToFull: 0,
+        timeToEmpty: 0,
+        bonus: {}
+      },
+      fame: {
+        "hidden": true,
+        cap: 0,
+        count: 0,
+        rate: 0,
+        timeToFull: 0,
+        timeToEmpty: 0,
+        bonus: {}
+      }
     };
 
-    var housing = {
-    	div: null,
-    	count: 0
+    const createResearch = (requires, generates) => {
+      return {
+        div: null,
+        count: 0,
+        requires,
+        generates
+      };
     };
-    var agriculture = {
-    	div: null,
-    	count: 0,
-    	requires: [
-    		{
-    			type: "resource",
-    			id: "research",
-    			value: 10
-    		},
-    		{
-    			type: "research",
-    			id: "housing",
-    			value: 1
-    		}
-    	]
+    const buildingImprovements = {
+      // Farm
+      crop_rotation: createResearch([requireResource("research", 100), requireBuilding("farm", 5)], [generateResource("fame", 5), generateJobBonus("farmer", "food", 0.02)]),
+      // Lumberjack Camp
+      woodcarvers: createResearch([requireResource("research", 150), requireResource("tools", 20), requireBuilding("lumberjack_camp", 5)], [generateResource("fame", 10), generateJobBonus("lumberjack", "wood", 0.02)]),
+      // Quarry
+      stone_extraction_tools: createResearch([requireResource("research", 175), requireResource("tools", 25), requireBuilding("quarry", 5)], [generateResource("fame", 10), generateJobBonus("quarryman", "stone", 0.02)]),
+      // Artisan Workshop
+      local_products: createResearch([requireResource("research", 350), requireBuilding("artisan_workshop", 5)], [generateResource("fame", 20), generateJobBonus("artisan", "tools", 0.02)])
     };
-    var stone_masonry = {
-    	div: null,
-    	count: 0,
-    	requires: [
-    		{
-    			type: "resource",
-    			id: "research",
-    			value: 20
-    		},
-    		{
-    			type: "research",
-    			id: "housing",
-    			value: 1
-    		}
-    	]
+
+    //////////////////////////
+    // STANDARD PROGRESSION //
+    //////////////////////////
+
+    // 
+    const firstAge = {
+      housing: createResearch([], []),
+      agriculture: createResearch([requireResource("research", 10), requireResearch("housing")], []),
+      stone_masonry: createResearch([requireResource("research", 20), requireResearch("housing")], []),
+      wood_cutting: createResearch([requireResource("research", 20), requireResearch("housing")], []),
+      pottery: createResearch([requireResource("research", 150), requireResearch("stone_masonry")], []),
+      writing: createResearch([requireResource("research", 500), requireResearch("pottery")], []),
+      mining: createResearch([requireResource("research", 250), requireBuilding("quarry", 3)], []),
+      storage: createResearch([requireResource("research", 300), requireResearch("agriculture")], []),
+      archery: createResearch([requireResource("research", 200), requireResource("wood", 150), requireResearch("agriculture")], [generateResourceCap("army", 2)]),
+      bronze_working: createResearch([requireResource("research", 600), requireResource("copper", 300), requireResearch("mining")], [generateResourceCap("army", 3)]),
+      breeding: createResearch([requireResource("research", 800), requireBuilding("farm", 5), requireResearch("storage")], []),
+      mythology: createResearch([requireResource("research", 750), requireBuilding("common_house", 8), requireResearch("writing")], []),
+      mathematics: createResearch([requireResource("research", 2500), requireResearch("writing")], []),
+      religion: createResearch([requireResource("research", 3500), requireResource("gold", 1500), requireResearch("writing")], []),
+      municipal_administration: createResearch([requireResource("research", 2500), requireBuilding("common_house", 15)], [generateResource("fame", 30)])
     };
-    var wood_cutting = {
-    	div: null,
-    	count: 0,
-    	requires: [
-    		{
-    			type: "resource",
-    			id: "research",
-    			value: 20
-    		},
-    		{
-    			type: "research",
-    			id: "housing",
-    			value: 1
-    		}
-    	]
+    const standardProgression = {
+      ...firstAge
     };
     var research = {
-    	housing: housing,
-    	agriculture: agriculture,
-    	stone_masonry: stone_masonry,
-    	wood_cutting: wood_cutting
+      ...standardProgression,
+      ...buildingImprovements
     };
 
     // Get all the buttons currently on the screen
@@ -35166,16 +35154,13 @@ const taVersion = "4.8.1";
         if (!count) {
           count = 0;
         }
-        let id = buttonText.replace(" ", "_").toLowerCase();
+        let id = buttonText.replaceAll(" ", "_").toLowerCase();
 
         // Extract information about this particular button from the data.
         // Warn if unable to find it
         let buttonData = referenceData[id];
         if (!buttonData) {
-          logger$1({
-            msgLevel: "error",
-            msg: "could not find data for button " + buttonText
-          });
+          error$1("could not find data for button " + buttonText);
           return;
         }
         buttons[id] = {
@@ -35186,6 +35171,14 @@ const taVersion = "4.8.1";
       return buttons;
     });
 
+    const resetResourceBonus = () => {
+      for (const [id, resourceData] of Object.entries(resources)) {
+        resourceData.id = "resource|" + id;
+        resourceData.div = null;
+        resourceData.count = 0;
+        resourceData.bonus = {};
+      }
+    };
     const getResourceState = () => {
       // Loop through all the divs that contain resource information
       const resourcesDivs = [...document.querySelectorAll('#root div > div > div > table > tbody > tr > td:nth-child(1) > span')];
@@ -35195,10 +35188,7 @@ const taVersion = "4.8.1";
         const resourceId = rawKey.split("_")[1];
         let resource = resources[resourceId];
         if (!resource) {
-          logger$1({
-            msgLevel: "error",
-            msg: "unable to find resource data for " + resourceId
-          });
+          error$1("unable to find resource data for " + resourceId);
         }
 
         // Grab all the resources values based on the resourceDiv
@@ -35240,10 +35230,7 @@ const taVersion = "4.8.1";
               resources,
               deficet
             });
-            logger({
-              msgLevel: "error",
-              msg: "NaN deficit"
-            });
+            error$1("NaN deficit");
           }
         }
       }
@@ -35269,53 +35256,54 @@ const taVersion = "4.8.1";
       };
     };
 
-    const updateStateFromGenerates = (generatesArray, count) => {
-      if (!generatesArray) {
+    const updateStateFromGenerates = (data, countDiff) => {
+      if (!data.generates) {
         return;
       }
-      generatesArray.forEach(gen => {
+      data.generates.forEach(gen => {
         // Population based changes
         if (gen.type === "job") {
-          jobs[gen.id].cap += count * gen.value;
+          jobs[gen.id].cap += countDiff * gen.value;
           if (gen.id === "unemployed") {
-            jobs[gen.id].count += count * gen.value;
+            jobs[gen.id].count += countDiff * gen.value;
           }
-        }
 
-        // Modifiers
-        if (gen.type === "modifier") {
+          // Modifiers
+        } else if (gen.type === "modifier") {
           // Job resources gains
-          if (gen.modifierType === "job_resource") {
+          if (gen.modifierType === "job_bonus") {
             let jobGenerates = jobs[gen.jobId].generates;
             let jobResource = jobGenerates.find(jobGen => jobGen.type == "resource" && jobGen.id == gen.resourceId);
-            if (jobResource) {
-              jobResource.bonus += count * gen.value;
+            if (jobResource && countDiff && gen.value) {
+              jobResource.bonus[data.id] = countDiff * gen.value;
             } else {
               console.log({
                 gen,
                 jobGenerates
               });
-              logger$1({
-                msgLevel: "error",
-                msg: "could not update generates"
-              });
+              error$1("could not update generates");
             }
 
             // global resource bonus
-          } else if (gen.modifierType === "resource") {
-            resources[gen.id].bonus += count * gen.value;
+          } else if (gen.modifierType === "resource" && resources[gen.id] && countDiff && gen.value) {
+            resources[gen.id].bonus[data.id] = countDiff * gen.value;
 
             // unrecognized modifier
           } else {
             console.log({
-              gen
+              gen,
+              countDiff
             });
-            logger$1({
-              msgLevel: "error",
-              msg: "could not update generates"
-            });
+            error$1("could not update generates");
           }
           return;
+        } else if (gen.type === "resource") ; else if (gen.type === "cap") ; else {
+          console.log({
+            data,
+            gen,
+            countDiff
+          });
+          error$1("invalid generate type");
         }
       });
     };
@@ -35330,8 +35318,12 @@ const taVersion = "4.8.1";
         objectData.generates.forEach(gen => {
           if (gen.type === "resource") {
             // Determine the bonus production of this resource
-            let bonus = resources[gen.id].bonus;
-            let production = objectData.count * gen.value * (1 + bonus);
+            let resourceBonus = addBonuses(resources[gen.id].bonus);
+            let dataBonus = 1;
+            if (gen.bonus) {
+              dataBonus = multiplyBonuses(gen.bonus);
+            }
+            let production = objectData.count * gen.value * resourceBonus * dataBonus;
 
             // Accumulate the data production
             if (gen.id in generation) {
@@ -35346,11 +35338,11 @@ const taVersion = "4.8.1";
       // Loop through all the benefits
       return generation;
     };
-    const getJobGeneration = data => {
+    const getJobGeneration = () => {
       let generation = {};
 
       // Loop through every object in the data file
-      for (const [id, objectData] of Object.entries(data)) {
+      for (const [id, objectData] of Object.entries(jobs)) {
         if (!objectData.generates) {
           continue;
         }
@@ -35358,9 +35350,9 @@ const taVersion = "4.8.1";
         objectData.generates.forEach(gen => {
           if (gen.type === "resource") {
             // Determine the bonus production of this resource
-            let resourceBonus = resources[gen.id].bonus;
-            let jobBonus = gen.bonus;
-            let production = gen.value * (1 + resourceBonus + jobBonus);
+            let resourceBonus = addBonuses(resources[gen.id].bonus);
+            let jobBonus = multiplyBonuses(gen.bonus);
+            let production = gen.value * resourceBonus * jobBonus;
 
             // Accumulate the data production
             generation[id][gen.id] = production;
@@ -35378,7 +35370,7 @@ const taVersion = "4.8.1";
       for (const [id, data] of Object.entries(resources)) {
         generation[id] = 0;
       }
-      let dataArrays = [buildings, research];
+      let dataArrays = [buildings, research, achievements, ancestors];
       dataArrays.forEach(data => {
         let subGeneration = getGeneration(data);
         for (const [id, value] of Object.entries(subGeneration)) {
@@ -35387,13 +35379,28 @@ const taVersion = "4.8.1";
       });
       return generation;
     };
+    const multiplyBonuses = bonus => {
+      let totalBonus = 1;
+      for (const [_, value] of Object.entries(bonus)) {
+        totalBonus *= 1 + value;
+      }
+      return totalBonus;
+    };
+    const addBonuses = bonus => {
+      let totalBonus = 1;
+      for (const [_, value] of Object.entries(bonus)) {
+        totalBonus += value;
+      }
+      return totalBonus;
+    };
 
     const getJobState = async () => {
       // Assume all things are not researched
-      for (const [jobId, jobData] of Object.entries(jobs)) {
+      for (const [id, jobData] of Object.entries(jobs)) {
+        jobData.id = "job|" + id;
         jobData.count = 0;
         jobData.cap = 0;
-        if (jobId !== "unemployed") {
+        if (id !== "unemployed") {
           jobData.addDiv = null;
           jobData.removeDiv = null;
         } else {
@@ -35410,14 +35417,11 @@ const taVersion = "4.8.1";
 
       // For each visible job, grab information about the current job state
       availableJobs.forEach(job => {
-        let id = job.textContent.replace(" ", "_").toLowerCase();
+        let id = job.textContent.replaceAll(" ", "_").toLowerCase();
         const jobData = jobs[id];
         if (!jobData) {
           console.log(id);
-          logger$1({
-            msgLevel: "error",
-            msg: "unable to find job data"
-          });
+          error$1("unable to find job data");
         }
         let jobContainer = job.parentElement.parentElement;
         jobData.count = +job.parentElement.parentElement.querySelector('input').value.split('/').shift().trim();
@@ -35462,7 +35466,7 @@ const taVersion = "4.8.1";
       let generation = calculateBaseGeneration();
 
       // Determine the impact of each job, including bonuses
-      let jobImpact = getJobGeneration(jobs);
+      let jobImpact = getJobGeneration();
 
       /*
           Calculate the fastest way to fulfill the deficet,
@@ -35476,6 +35480,13 @@ const taVersion = "4.8.1";
         if (selectedJob === null) {
           break;
         }
+        console.log({
+          jobCount,
+          deficet,
+          jobImpact,
+          generation,
+          selectedJob
+        });
         if (selectedJob in jobCount) {
           jobCount[selectedJob] += 1;
         } else {
@@ -35569,10 +35580,12 @@ const taVersion = "4.8.1";
 
         // Determine the full or empty scores
         if (genRate !== 0) {
+          let fillPercent = resources[id].count / resources[id].cap;
           if (genRate < 0) {
-            emptyScores[id] = genRate;
+            emptyScores[id] = genRate * fillPercent;
           } else {
-            fullScores[id] = -Math.log(1 / (genRate / FULL_WIDTH + 1)) / Math.log(FULL_BASE);
+            let score = -Math.log(1 / (genRate / FULL_WIDTH + 1)) / Math.log(FULL_BASE);
+            fullScores[id] = score * (1 - fillPercent);
           }
         }
 
@@ -35595,9 +35608,87 @@ const taVersion = "4.8.1";
       return score;
     };
 
+    const checkRequires = requires => {
+      let valid = true;
+      requires.forEach(req => {
+        // Skip if already determine to be invalid
+        if (!valid) {
+          return;
+        }
+
+        // Different require types
+        if (req.type === "building") {
+          if (buildings[req.id].count < req.value) {
+            valid = false;
+          }
+        } else if (req.type === "resource") {
+          if (resources[req.id].count < req.value) {
+            valid = false;
+          }
+        } else if (req.type === "research") {
+          if (research[req.id].count < req.value) {
+            valid = false;
+          }
+
+          // If here, req didn't pass any, so we fail
+        } else {
+          console.log("unidentified requires type:", req);
+          valid = false;
+        }
+      });
+      return valid;
+    };
+
+    // Get the current state of all building
+    const getAchievementState = async initialize => {
+      if (initialize) {
+        await navigation.switchPage(constants.PAGES.BUILD);
+
+        // Reset all the values
+        for (const [id, achievementData] of Object.entries(achievements)) {
+          achievementData.id = "achievement|" + id;
+          achievementData.count = 0;
+        }
+
+        // Check the achievements list
+        const achievementsButton = document.querySelector('#root > header > div > div > button.py-1\\.5.px-3.text-amber-500');
+        await achievementsButton.click();
+        await sleep(1000);
+        const container = document.querySelector('div.modal-container.lg\\:my-8.lg\\:max-w-4xl.lg\\:pt-6.opacity-100.translate-y-0');
+        const list = container.querySelectorAll('h5.text-xl.font-bold');
+        list.forEach(element => {
+          let achievementId = element.textContent.toLowerCase().replaceAll(" ", "_");
+          let achievementData = achievements[achievementId];
+          if (achievementData) {
+            achievementData.count = 1;
+            updateStateFromGenerates(achievementData, 1);
+          } else {
+            error$1("found unknown achievement " + achievementId);
+          }
+        });
+        const closeButton = document.querySelector('div.modal-container.lg\\:my-8.lg\\:max-w-4xl.lg\\:pt-6.opacity-100.translate-y-0 > div.absolute.top-0.right-0.z-20.pt-4.pr-4 > button');
+        await closeButton.click();
+        await sleep(500);
+      }
+
+      // Check to see if any new achievements are unlocked
+      for (const [_, achievementData] of Object.entries(achievements)) {
+        if (achievementData.count === 0 && checkRequires(achievementData.requires)) {
+          achievementData.count = 1;
+          updateStateFromGenerates(achievementData, 1);
+        }
+      }
+      console.log({
+        initialize,
+        achievements
+      });
+      return achievements;
+    };
+
     // Get the current state of all building
     const getBuildingState = async initialize => {
-      for (const [_, buildingData] of Object.entries(buildings)) {
+      for (const [id, buildingData] of Object.entries(buildings)) {
+        buildingData.id = "building|" + id;
         buildingData.count = 0;
         buildingData.div = null;
         if (initialize && buildingData.generates) {
@@ -35615,14 +35706,15 @@ const taVersion = "4.8.1";
       for (const [buildingId, buildingData] of Object.entries(buttons)) {
         let foundBuilding = buildings[buildingId];
         if (foundBuilding) {
-          if (initialize) {
-            updateStateFromGenerates(foundBuilding.generates, buildingData.count);
-          }
           foundBuilding.count = buildingData.count;
           foundBuilding.div = buildingData.div;
+          if (initialize) {
+            updateStateFromGenerates(foundBuilding, foundBuilding.count);
+          }
         }
       }
       console.log({
+        initialize,
         buildings
       });
       return buildings;
@@ -35632,18 +35724,17 @@ const taVersion = "4.8.1";
     const makeBuilding = buildingId => {
       let building = buildings[buildingId];
       if (!building) {
-        logger$1({
-          msgLevel: "error",
-          msg: 'unable to "makeBuilding(' + buildingId + ")"
-        });
+        error('unable to "makeBuilding(' + buildingId + ")");
       }
 
       // Increment the building counter in state
-      console.log(buildingId, building);
       building.count += 1;
 
       // Update any values that need to be updated based on the modifiers
-      updateStateFromGenerates(building.generates, 1);
+      updateStateFromGenerates(building, 1);
+
+      // Check achievements
+      getAchievementState(false);
     };
 
     var buy = (({
@@ -35682,13 +35773,10 @@ const taVersion = "4.8.1";
             await navigation.switchPage(page);
           }
 
-          // Check to see if the requested button even exists. If not, log a warning and continue
+          // Check to see if the requested data even exists. If not, log a warning and continue
           let data = referenceData[id];
           if (!data) {
-            logger$1({
-              msgLevel: "error",
-              msg: "unable to find reference data for"
-            });
+            error$1("unable to find reference data for");
             ret.complete = true;
             return ret;
           }
@@ -35711,10 +35799,6 @@ const taVersion = "4.8.1";
 
           // If we have all the requirements for the building, then building it!
           let deficet = updateDeficet(resourcesRequirements);
-          console.log({
-            deficet,
-            resourcesRequirements
-          });
 
           // Click the button if we can. Otherwise, we want to rebalance resources accordingly
           if (deficet === null) {
@@ -35731,10 +35815,7 @@ const taVersion = "4.8.1";
               console.log({
                 data
               });
-              logger$1({
-                msgLevel: "error",
-                msg: "unable to find div for " + id
-              });
+              error$1("unable to find div for " + id);
               ret.complete = true;
               ret.delay = 0;
             }
@@ -35745,10 +35826,7 @@ const taVersion = "4.8.1";
           return ret;
         },
         before,
-        log: {
-          msgLevel: "log",
-          msg: 'buying ' + count + ' "' + id + '"'
-        }
+        log: 'buying ' + count + ' "' + id + '"'
       };
     });
 
@@ -35760,7 +35838,19 @@ const taVersion = "4.8.1";
         subpage: constants.SUBPAGES.CITY,
         referenceData: buildings,
         before: async () => {
+          // Check to see if the requested data even exists. If not, log a warning and continue
+          let data = buildings[buildingId];
+          if (!data) {
+            error$1("unable to find reference data for");
+            return true;
+          }
+
+          // Check to see if we have enough of the button. If so, immediately return
+          if (data.count >= count) {
+            return true;
+          }
           await getBuildingState(false);
+          return false;
         },
         onClick: async () => {
           makeBuilding(buildingId);
@@ -35773,7 +35863,8 @@ const taVersion = "4.8.1";
     const getResearchState = async initialize => {
       if (initialize) {
         // Assume all things are not researched at the start
-        for (const [researchId, researchData] of Object.entries(research)) {
+        for (const [id, researchData] of Object.entries(research)) {
+          researchData.id = "research|" + id;
           researchData.div = null;
           researchData.count = 0;
         }
@@ -35789,7 +35880,15 @@ const taVersion = "4.8.1";
         if (foundResearch) {
           foundResearch.count = initialize ? 1 : 0;
           foundResearch.div = researchData.div;
+          if (foundResearch.count) {
+            updateStateFromGenerates(foundResearch, 1);
+          }
         }
+      }
+
+      // Just better this way, lol
+      if (initialize) {
+        await navigation.switchSubPage(constants.SUBPAGES.RESEARCH, constants.PAGES.RESEARCH);
       }
       console.log({
         initialize,
@@ -35800,10 +35899,7 @@ const taVersion = "4.8.1";
     const completeResearch = async researchId => {
       let data = research[researchId];
       if (!data) {
-        logger({
-          msgLevel: "error",
-          msg: 'unable to "completeResearch(' + researchId + ")"
-        });
+        error$1('unable to "completeResearch(' + researchId + ")");
       }
 
       // Increment the research counter in state and remove the div
@@ -35811,7 +35907,10 @@ const taVersion = "4.8.1";
       data.div = null;
 
       // Update any values that need to be updated based on the modifiers
-      updateStateFromGenerates(data.generates, 1);
+      updateStateFromGenerates(data, 1);
+
+      // Check achievements
+      getAchievementState(false);
     };
 
     const automateResearch = researchId => {
@@ -35822,7 +35921,19 @@ const taVersion = "4.8.1";
         subpage: constants.SUBPAGES.RESEARCH,
         referenceData: research,
         before: async () => {
+          // Check to see if the requested data even exists. If not, log a warning and continue
+          let data = research[researchId];
+          if (!data) {
+            error$1("unable to find reference data for");
+            return true;
+          }
+
+          // Check to see if we have enough of the button. If so, immediately return
+          if (data.count >= 1) {
+            return true;
+          }
           await getResearchState(false);
+          return false;
         },
         onClick: async () => {
           completeResearch(researchId);
@@ -35830,17 +35941,21 @@ const taVersion = "4.8.1";
       });
     };
 
-    var standard = {
+    const queueEarlyGameStandard = {
       index: 0,
       lastIndex: null,
       completed: null,
-      queueFunctions: [automateResearch("housing"), automateCityBuild("common_house", 3), automateResearch("agriculture"), automateCityBuild("farm", 3), automateResearch("wood_cutting"), automateResearch("stone_masonry"), automateCityBuild("common_house", 5), automateCityBuild("lumberjack_camp", 1), automateCityBuild("quarry", 1), automateCityBuild("common_house", 7)]
+      queueFunctions: [automateResearch("housing"), automateCityBuild("common_house", 3), automateResearch("agriculture"), automateCityBuild("farm", 1), automateCityBuild("common_house", 4), automateCityBuild("farm", 2), automateResearch("wood_cutting"), automateCityBuild("common_house", 5), automateCityBuild("lumberjack_camp", 1), automateCityBuild("common_house", 6), automateCityBuild("lumberjack_camp", 2), automateCityBuild("common_house", 7), automateCityBuild("farm", 3), automateCityBuild("lumberjack_camp", 3), automateResearch("stone_masonry"), automateCityBuild("common_house", 8), automateCityBuild("quarry", 2), automateCityBuild("common_house", 9), automateResearch("pottery"), automateCityBuild("farm", 4), automateCityBuild("lumberjack_camp", 4), automateCityBuild("common_house", 10), automateResearch("storage"), automateCityBuild("artisan_workshop", 1), automateCityBuild("farm", 5), automateResearch("crop_rotation"), automateCityBuild("lumberjack_camp", 5), automateResearch("woodcarvers"), automateCityBuild("farm", 7), automateCityBuild("common_house", 11), automateCityBuild("artisan_workshop", 2), automateCityBuild("common_house", 12), automateCityBuild("quarry", 5), automateResearch("stone_extraction_tools"), automateCityBuild("lumberjack_camp", 7), automateCityBuild("common_house", 13), automateCityBuild("artisan_workshop", 3), automateCityBuild("store", 1), automateCityBuild("common_house", 14), automateCityBuild("artisan_workshop", 4), automateCityBuild("common_house", 15), automateCityBuild("artisan_workshop", 5), automateResearch("local_products"), automateCityBuild("school", 2)]
     };
+
     var queues = {
-      standard
+      queueEarlyGameStandard
     };
 
     async function automate (queueName) {
+      // Check to see if any achievements have been unlocked
+      getAchievementState(false);
+
       // Determine if there is a more optimal way to distribute our population
       await distributePopulation();
       let queue = queues[queueName];
@@ -35849,19 +35964,18 @@ const taVersion = "4.8.1";
       }
       let step = queue.queueFunctions[queue.index];
       if (!step) {
-        logger$1({
-          msgLevel: "log",
-          msg: "completed " + queueName + "!"
-        });
+        log("completed " + queueName + "!");
         queue.completed = true;
         return 1000;
       }
       if (queue.lastIndex !== queue.index) {
-        logger$1(step.log);
+        log(step.log);
         queue.lastIndex = queue.index;
       }
-      if (step.before) {
-        await step.before();
+      if (step.before && (await step.before())) {
+        console.log("step", queue.index, "already complete. skipping");
+        queue.index = queue.index + 1;
+        return 0;
       }
       let response = await step.function();
       if (response.complete) {
@@ -35870,6 +35984,30 @@ const taVersion = "4.8.1";
       }
       return response.delay;
     }
+
+    // Get the current state of all building
+    const getAncestorState = async () => {
+      await navigation.switchPage(constants.PAGES.BUILD);
+
+      // Check the achievements list
+      const ancestorButton = document.querySelector('span.text-ancestor');
+      await ancestorButton.click();
+      await sleep(1000);
+      const textDiv = document.querySelector('div.text-ancestor');
+      for (const [id, ancestorData] of Object.entries(ancestors)) {
+        ancestorData.id = "ancestor|" + id;
+        ancestorData.count = 0;
+        if (textDiv.textContent.includes(ancestorData.text)) {
+          ancestorData.count = 1;
+          updateStateFromGenerates(ancestorData, 1);
+        }
+      }
+      await ancestorButton.click();
+      console.log({
+        ancestors
+      });
+      return ancestors;
+    };
 
     let mainLoopRunning = false;
     let hideFullPageOverlayInterval;
@@ -35880,7 +36018,7 @@ const taVersion = "4.8.1";
       if (!state.scriptPaused) {
         start();
       } else {
-        logger$1({
+        logger({
           msgLevel: 'log',
           msg: 'Pausing automation'
         });
@@ -35893,7 +36031,7 @@ const taVersion = "4.8.1";
       }
       mainLoopRunning = true;
       while (!state.scriptPaused) {
-        let waitFor = await automate("standard");
+        let waitFor = await automate("queueEarlyGameStandard");
         await sleep(waitFor);
       }
       mainLoopRunning = false;
@@ -35914,15 +36052,18 @@ const taVersion = "4.8.1";
       document.querySelector('html').classList.add('dark');
       tasks.managePanel.updatePanel();
       if (!state.scriptPaused) {
-        logger$1({
+        logger({
           msgLevel: 'log',
           msg: 'Starting automation'
         });
 
         // Initialize the current state of affairs
+        resetResourceBonus();
         await getBuildingState(true);
         await getResearchState(true);
         await getJobState();
+        await getAchievementState(true);
+        await getAncestorState();
         if (!hideFullPageOverlayInterval) {
           clearInterval(hideFullPageOverlayInterval);
           hideFullPageOverlayInterval = setInterval(tasks.cosmetics.hideFullPageOverlay, 500);

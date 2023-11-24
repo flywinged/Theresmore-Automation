@@ -1,4 +1,5 @@
 import { selectors, logger, numberParser } from '../../utils'
+import { error } from '../../utils/logger'
 
 // Get all the buttons currently on the screen
 export default (
@@ -19,13 +20,13 @@ export default (
             count = 0
         }
 
-        let id = buttonText.replace(" ", "_").toLowerCase()
+        let id = buttonText.replaceAll(" ", "_").toLowerCase()
 
         // Extract information about this particular button from the data.
         // Warn if unable to find it
         let buttonData = referenceData[id]
         if (!buttonData) {
-            logger({msgLevel: "error", msg: "could not find data for button " + buttonText})
+            error("could not find data for button " + buttonText)
             return
         }
 

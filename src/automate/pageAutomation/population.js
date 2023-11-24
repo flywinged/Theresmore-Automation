@@ -3,7 +3,7 @@ import constants from "../../utils/constants"
 import { buildings, jobs, research, resources } from "../data"
 import getBuyableButtons from "../helpers/getBuyableButtons"
 import { getDeficet } from "../state/deficet"
-import { calculateBaseGeneration, getGeneration, getJobGeneration } from "../state/generates"
+import { calculateBaseGeneration, getJobGeneration } from "../state/generates"
 import { getJobState } from "../state/jobs"
 
 const FULL_WIDTH = 20
@@ -25,7 +25,7 @@ export const distributePopulation = async () => {
     let generation = calculateBaseGeneration()
 
     // Determine the impact of each job, including bonuses
-    let jobImpact = getJobGeneration(jobs)
+    let jobImpact = getJobGeneration()
 
     /*
         Calculate the fastest way to fulfill the deficet,
@@ -39,6 +39,8 @@ export const distributePopulation = async () => {
         if (selectedJob === null) {
             break
         }
+
+        console.log({jobCount, deficet, jobImpact, generation, selectedJob})
 
         if (selectedJob in jobCount) {
             jobCount[selectedJob] += 1
@@ -147,10 +149,12 @@ const scoreSetup = (generation, deficet) => {
 
         // Determine the full or empty scores
         if (genRate !== 0) {
+            let fillPercent = resources[id].count / resources[id].cap
             if (genRate < 0) {
-                emptyScores[id] = genRate
+                emptyScores[id] = genRate * fillPercent
             } else {
-                fullScores[id] = - Math.log(1 / ((genRate / FULL_WIDTH) + 1)) / Math.log(FULL_BASE);
+                let score = - Math.log(1 / ((genRate / FULL_WIDTH) + 1)) / Math.log(FULL_BASE)
+                fullScores[id] = score * (1 - fillPercent)
             }
         }
 

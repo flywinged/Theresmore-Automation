@@ -2,12 +2,14 @@ import { logger, navigation } from "../../utils"
 import constants from "../../utils/constants"
 import { buildings } from "../data"
 import getBuyableButtons from "../helpers/getBuyableButtons"
+import { getAchievementState } from "./achievements"
 import { updateStateFromGenerates } from "./generates"
 
 // Get the current state of all building
 export const getBuildingState = async (initialize) => {
 
-    for (const [_, buildingData] of Object.entries(buildings)) {
+    for (const [id, buildingData] of Object.entries(buildings)) {
+        buildingData.id = "building|" + id
         buildingData.count = 0
         buildingData.div = null
 
@@ -28,17 +30,17 @@ export const getBuildingState = async (initialize) => {
         let foundBuilding = buildings[buildingId]
         if (foundBuilding) {
 
-            if (initialize) {
-                updateStateFromGenerates(foundBuilding.generates, buildingData.count)
-            }
-
             foundBuilding.count = buildingData.count
             foundBuilding.div = buildingData.div
+
+            if (initialize) {
+                updateStateFromGenerates(foundBuilding, foundBuilding.count)
+            }
 
         }
     }
 
-    console.log({buildings})
+    console.log({initialize, buildings})
     return buildings
 
 }
@@ -47,14 +49,16 @@ export const getBuildingState = async (initialize) => {
 export const makeBuilding = (buildingId) => {
     let building = buildings[buildingId]
     if (!building) {
-        logger({msgLevel: "error", msg: 'unable to "makeBuilding(' + buildingId + ")"})
+        error('unable to "makeBuilding(' + buildingId + ")")
     }
 
     // Increment the building counter in state
-    console.log(buildingId, building)
     building.count += 1
 
     // Update any values that need to be updated based on the modifiers
-    updateStateFromGenerates(building.generates, 1)
+    updateStateFromGenerates(building, 1)
+
+    // Check achievements
+    getAchievementState(false)
 
 }

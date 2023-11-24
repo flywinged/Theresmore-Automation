@@ -1,4 +1,5 @@
 import { navigation, logger } from '../../utils'
+import { error } from '../../utils/logger'
 import { updateDeficet } from '../state/deficet'
 import { getResourceState } from '../state/resource'
 
@@ -29,6 +30,7 @@ export default ({
                 complete: false,
                 delay: 0
             }
+            
 
             // Switch to the correct tab (if not already there)
             if (subpage) {
@@ -37,10 +39,10 @@ export default ({
                 await navigation.switchPage(page)
             }
         
-            // Check to see if the requested button even exists. If not, log a warning and continue
+            // Check to see if the requested data even exists. If not, log a warning and continue
             let data = referenceData[id]
             if (!data) {
-                logger({msgLevel: "error", msg: "unable to find reference data for"})
+                error("unable to find reference data for")
                 ret.complete = true
                 return ret
             }
@@ -63,8 +65,6 @@ export default ({
         
             // If we have all the requirements for the building, then building it!
             let deficet = updateDeficet(resourcesRequirements)
-
-            console.log({deficet, resourcesRequirements})
         
             // Click the button if we can. Otherwise, we want to rebalance resources accordingly
             if (deficet === null) {
@@ -80,7 +80,7 @@ export default ({
                     canBalance = true
                 } else {
                     console.log({data})
-                    logger({msgLevel: "error", msg: "unable to find div for " + id})
+                    error("unable to find div for " + id)
                     ret.complete = true
                     ret.delay = 0
                 }
@@ -92,6 +92,6 @@ export default ({
         
         },
         before,
-        log: {msgLevel: "log", msg: 'buying ' + count + ' "' + id + '"'}
+        log: 'buying ' + count + ' "' + id + '"'
     }
 }

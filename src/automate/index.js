@@ -1,8 +1,12 @@
-import { logger } from "../utils"
+import { log } from "../utils/logger"
 import { distributePopulation } from "./pageAutomation/population"
 import queues from "./queues"
+import { getAchievementState } from "./state/achievements"
 
 export default async function(queueName) {
+
+    // Check to see if any achievements have been unlocked
+    getAchievementState(false)
 
     // Determine if there is a more optimal way to distribute our population
     await distributePopulation()
@@ -16,18 +20,20 @@ export default async function(queueName) {
     let step = queue.queueFunctions[queue.index]
 
     if (!step) {
-        logger({msgLevel: "log", msg: "completed " + queueName + "!"})
+        log("completed " + queueName + "!")
         queue.completed = true
         return 1000
     }
 
     if (queue.lastIndex !== queue.index) {
-        logger(step.log)
+        log(step.log)
         queue.lastIndex = queue.index
     }
 
-    if (step.before) {
-        await step.before()
+    if (step.before && await step.before()) {
+        console.log("step", queue.index, "already complete. skipping")
+        queue.index = queue.index + 1
+        return 0
     }
 
     let response = await step.function()
